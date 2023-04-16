@@ -26,7 +26,6 @@ public class CertificateRepository {
     public int create(Certificate certificate) {
         log.info("Repository. Create certificate with name: " + certificate.getName());
         final String SQL = "INSERT INTO certificate VALUES (default, ?, ?, ?, ?, ?, ?)";
-        String dateTime = ZonedDateTime.now().toLocalDateTime().toString();
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -36,8 +35,8 @@ public class CertificateRepository {
             ps.setString(2, certificate.getDescription());
             ps.setDouble(3, certificate.getPrice());
             ps.setInt(4, certificate.getDuration());
-            ps.setString(5, dateTime);
-            ps.setString(6, dateTime);
+            ps.setString(5, certificate.getCreateDate());
+            ps.setString(6, certificate.getLastUpdateDate());
             return ps;
         }, keyHolder);
 
@@ -72,7 +71,7 @@ public class CertificateRepository {
                 certificate.getDescription(),
                 certificate.getPrice(),
                 certificate.getDuration(),
-                ZonedDateTime.now().toLocalDateTime().toString(),
+                certificate.getLastUpdateDate(),
                 id);
     }
 

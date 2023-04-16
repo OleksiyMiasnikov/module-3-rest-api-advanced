@@ -3,6 +3,7 @@ package com.epam.esm.services;
 import com.epam.esm.exceptions.ModuleException;
 import com.epam.esm.models.Certificate;
 import com.epam.esm.repositories.CertificateRepository;
+import com.epam.esm.utils.DateUtil;
 import com.epam.esm.validators.CertificateValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,8 @@ public class CertificateService {
         if (bindingResult.hasErrors()) {
             throw new ModuleException(bindingResult);
         }
-
+        certificate.setCreateDate(DateUtil.getDate());
+        certificate.setLastUpdateDate(DateUtil.getDate());
         int result = repo.create(certificate);
         return findById(result);
     }
@@ -92,6 +94,7 @@ public class CertificateService {
         if (certificate.getDuration() == null) {
             certificate.setDuration(oldCertificate.getDuration());
         }
+        certificate.setLastUpdateDate(DateUtil.getDate());
         repo.update(id, certificate);
         return findById(id);
     }
