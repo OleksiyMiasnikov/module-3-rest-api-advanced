@@ -4,7 +4,6 @@ import com.epam.esm.exceptions.ModuleException;
 import com.epam.esm.models.Certificate;
 import com.epam.esm.repositories.CertificateRepository;
 import com.epam.esm.utils.DateUtil;
-import com.epam.esm.validators.CertificateValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import java.util.List;
 public class CertificateService {
 
     private final CertificateRepository repo;
-    private final CertificateValidator validator;
 
     /**
      * Creates a new tag.
@@ -34,16 +32,11 @@ public class CertificateService {
     public Certificate create(Certificate certificate) {
         log.info("Service. Create certificate with name: " + certificate.getName());
 
-        DataBinder binder = new DataBinder(certificate);
-        binder.setValidator(validator);
-        binder.validate();
-        BindingResult bindingResult = binder.getBindingResult();
-        if (bindingResult.hasErrors()) {
-            throw new ModuleException(bindingResult);
-        }
         certificate.setCreateDate(DateUtil.getDate());
         certificate.setLastUpdateDate(DateUtil.getDate());
+
         int result = repo.create(certificate);
+
         return findById(result);
     }
 
@@ -54,6 +47,7 @@ public class CertificateService {
      */
     public List<Certificate> findAll() {
         log.info("Service. Find all certificates");
+
         return repo.findAll();
     }
 
@@ -66,6 +60,7 @@ public class CertificateService {
      */
     public Certificate findById(int id) {
         log.info("Service. Find certificate by id: " + id);
+
         return repo.findById(id)
                 .orElseThrow(() -> new ModuleException("Requested certificate is not found (id=" + id + ")", "40411"));
     }
@@ -81,6 +76,7 @@ public class CertificateService {
     @Transactional
     public Certificate update(int id, Certificate certificate) {
         log.info("Service. Update certificate by id: " + id);
+
         Certificate oldCertificate = findById(id);
         if (certificate.getName() == null) {
             certificate.setName(oldCertificate.getName());
@@ -94,8 +90,11 @@ public class CertificateService {
         if (certificate.getDuration() == null) {
             certificate.setDuration(oldCertificate.getDuration());
         }
+
         certificate.setLastUpdateDate(DateUtil.getDate());
+
         repo.update(id, certificate);
+
         return findById(id);
     }
 
@@ -107,6 +106,7 @@ public class CertificateService {
      */
     public boolean delete(int id) {
         log.info("Service. Delete certificate by id: " + id);
+
         return repo.delete(id);
     }
 

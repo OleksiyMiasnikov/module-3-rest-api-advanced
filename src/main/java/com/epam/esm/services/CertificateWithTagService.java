@@ -7,7 +7,6 @@ import com.epam.esm.models.Tag;
 import com.epam.esm.repositories.CertificateRepository;
 import com.epam.esm.repositories.CertificateWithTagRepository;
 import com.epam.esm.repositories.TagRepository;
-import com.epam.esm.validators.CertificateWithTagValidator;
 import com.epam.esm.validators.SortingValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,6 @@ public class CertificateWithTagService{
     private final CertificateWithTagRepository repo;
     private final TagRepository tagRepo;
     private final CertificateRepository certificateRepo;
-    private final CertificateWithTagValidator validator;
     private final SortingValidator sortingValidator;
 
     /**
@@ -42,15 +40,6 @@ public class CertificateWithTagService{
     @Transactional
     public CertificateWithTag create(CertificateWithTag certificateWithTag) {
         log.info("Service. Create certificate with tag and name: " + certificateWithTag.getName());
-
-        // validation certificateWithTag
-        DataBinder binder = new DataBinder(certificateWithTag);
-        binder.setValidator(validator);
-        binder.validate();
-        BindingResult bindingResult = binder.getBindingResult();
-        if (bindingResult.hasErrors()) {
-            throw new ModuleException(bindingResult);
-        }
 
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId

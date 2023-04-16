@@ -1,9 +1,11 @@
 package com.epam.esm.models;
 
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.util.Objects;
 
@@ -13,9 +15,15 @@ import java.util.Objects;
 @Builder
 public class Certificate {
     private int id;
+    @NotEmpty(message = "Field 'name' can not be empty!")
     private String name;
+    @NotEmpty(message = "Field 'description' can not be empty!")
     private String description;
+    @NotNull(message = "Field 'price' can not be empty!")
+    @Min(value = 1, message = "Field 'price' should be more then 0!")
     private Double price;
+    @NotNull(message = "Field 'duration' can not be empty!")
+    @Min(value = 1, message = "Field 'duration' should be more then 0!")
     private Integer duration;
     private String createDate;
     private String lastUpdateDate;

@@ -20,15 +20,9 @@ public class CertificateController{
 
     private final CertificateService service;
     @PostMapping()
-    public Certificate create(@ModelAttribute("certificate") @Valid Certificate certificate,
-                              BindingResult bindingResult) {
+    public Certificate create(@Valid @RequestBody Certificate certificate) {
         log.info("Controller. Create certificate with name: " + certificate.getName());
-        if (bindingResult.hasErrors()) {
-            throw new ModuleException(Objects.requireNonNull(bindingResult.getFieldError())
-                            .getDefaultMessage(),
-                    "400001");
-        }
-        return service.create(certificate);
+                return service.create(certificate);
     }
 
     @GetMapping()
