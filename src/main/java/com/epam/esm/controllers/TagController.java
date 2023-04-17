@@ -18,9 +18,9 @@ public class TagController{
     private final TagService service;
 
     @PostMapping()
-    public Tag create(@RequestParam("name") String name) {
-        log.info("Controller. Create tag with name: " + name);
-        return service.create(name);
+    public Tag create(@Valid @RequestBody Tag tag) {
+        log.info("Controller. Create tag with name: " + tag.getName());
+        return service.create(tag.getName());
     }
 
 //    @GetMapping()

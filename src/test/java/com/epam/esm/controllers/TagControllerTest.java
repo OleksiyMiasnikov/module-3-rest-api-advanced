@@ -19,6 +19,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -70,23 +71,26 @@ class TagControllerTest {
         this.mockMvc.perform(get("/tags"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(contains(expected)));
+                .andExpect(content().string(expected));
     }
 
     @Test
     void createTest() throws Exception {
+        String expected = "{\"id\":5,\"name\":\"new tag\"}";
+        String bodyContent = "{\n \"name\": \"new tag\"\n}";
         Tag expectedTag = Tag.builder()
                 .id(5)
                 .name("new tag")
                 .build();
-        String expected = "{\"id\":5,\"name\":\"new tag\"}";
 
         when(service.create(any(String.class))).thenReturn(expectedTag);
 
-        this.mockMvc.perform(post("/tags").param("name","new tag"))
+        this.mockMvc.perform(post("/tags")
+                        .contentType(APPLICATION_JSON_UTF8)
+                        .content(bodyContent))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(contains(expected)));
+                .andExpect(content().string(expected));
     }
 
     @Test
@@ -98,7 +102,7 @@ class TagControllerTest {
         this.mockMvc.perform(get("/tags/{id}",1))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(contains(expected)));
+                .andExpect(content().string(expected));
     }
 
     @Test
@@ -110,7 +114,7 @@ class TagControllerTest {
         this.mockMvc.perform(get("/tags").param("name","first tag"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(contains(expected)));
+                .andExpect(content().string(expected));
     }
 
     @Test
@@ -120,6 +124,6 @@ class TagControllerTest {
         this.mockMvc.perform(delete("/tags/{id}",1))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(contains("true")));
+                .andExpect(content().string("true"));
     }
 }
