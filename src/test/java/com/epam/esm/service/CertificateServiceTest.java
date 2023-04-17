@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.repositorie.CertificateRepository;
+import com.epam.esm.repository.CertificateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

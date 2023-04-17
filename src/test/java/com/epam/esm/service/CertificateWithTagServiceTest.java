@@ -2,9 +2,9 @@ package com.epam.esm.service;
 
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
-import com.epam.esm.repositorie.CertificateRepository;
-import com.epam.esm.repositorie.CertificateWithTagRepository;
-import com.epam.esm.repositorie.TagRepository;
+import com.epam.esm.repository.CertificateRepository;
+import com.epam.esm.repository.CertificateWithTagRepository;
+import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
 import com.epam.esm.validator.SortingValidator;
 import org.junit.jupiter.api.BeforeEach;

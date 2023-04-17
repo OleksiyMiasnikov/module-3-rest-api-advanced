@@ -153,11 +153,6 @@ class CertificateControllerTest {
 
     @Test
     void updateTest() throws Exception {
-        String expected = "{\"id\":1," +
-                "\"name\":\"new name of certificate\"," +
-                "\"description\":\"description of certificate 1\"," +
-                "\"price\":222.45," +
-                "\"duration\":5,";
         String bodyContent = """
                 {
                     "name": "new name of certificate",

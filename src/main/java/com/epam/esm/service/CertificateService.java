@@ -2,8 +2,8 @@ package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.repositorie.CertificateRepository;
-import com.epam.esm.util.DateUtil;
+import com.epam.esm.repository.CertificateRepository;
+import com.epam.esm.config.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
