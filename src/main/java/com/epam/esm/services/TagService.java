@@ -32,15 +32,15 @@ public class TagService {
         return findById(result);
     }
 
-    /**
-     * Finds all tags.
-     *
-     * @return List of {@link Tag} List of all tags from database
-     */
-    public List<Tag> findAll() {
-        log.info("Service. Find all tags");
-        return repo.findAll();
-    }
+//    /**
+//     * Finds all tags.
+//     *
+//     * @return List of {@link Tag} List of all tags from database
+//     */
+//    public List<Tag> findAll() {
+//        log.info("Service. Find all tags");
+//        return repo.findAll();
+//    }
 
     /**
      * Finds a {@link Tag} by its id.
@@ -57,13 +57,14 @@ public class TagService {
 
     /**
      * Finds all {@link Tag} by name.
+     * Returns all records if name is empty
      *
      * @param name tag name
      * @return List {@link Tag} List of tags
      */
     public List<Tag> findByName(String name) {
         log.info("Service. Find tag by name: " + name);
-        return repo.findByName(name);
+        return (name.isEmpty()) ? repo.findAll() : repo.findByName(name);
     }
 
     /**

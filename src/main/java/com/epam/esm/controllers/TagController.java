@@ -2,6 +2,7 @@ package com.epam.esm.controllers;
 
 import com.epam.esm.models.Tag;
 import com.epam.esm.services.TagService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +23,11 @@ public class TagController{
         return service.create(name);
     }
 
-    @GetMapping()
-    public List<Tag> findAll() {
-        log.info("Controller. Find all tags");
-        return service.findAll();
-    }
+//    @GetMapping()
+//    public List<Tag> findAll() {
+//        log.info("Controller. Find all tags");
+//        return service.findAll();
+//    }
 
     @GetMapping("/{id}")
     public Tag findById(@PathVariable("id") int id) {
@@ -34,8 +35,8 @@ public class TagController{
         return service.findById(id);
     }
 
-    @GetMapping("/name/{name}")
-    public List<Tag> findByName(@PathVariable("name") String name) {
+    @GetMapping()
+    public List<Tag> findByName(@Valid @ModelAttribute ("name") String name) {
         log.info("Controller. Find tag by name: " + name);
         return service.findByName(name);
     }

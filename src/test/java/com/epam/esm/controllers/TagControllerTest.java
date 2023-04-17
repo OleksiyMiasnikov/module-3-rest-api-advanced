@@ -3,8 +3,6 @@ package com.epam.esm.controllers;
 import com.epam.esm.exceptions.ModuleExceptionHandler;
 import com.epam.esm.models.Tag;
 import com.epam.esm.services.TagService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,11 +16,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,43 +61,65 @@ class TagControllerTest {
                 .build();
     }
 
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
     void findAllTest() throws Exception {
         String expected = "[{\"id\":1,\"name\":\"first tag\"},{\"id\":2,\"name\":\"second tag\"}]";
 
-        when(service.findAll()).thenReturn(listOfTwoTags);
+        when(service.findByName("")).thenReturn(listOfTwoTags);
 
         this.mockMvc.perform(get("/tags"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expected)));
+                .andExpect(content().string(contains(expected)));
     }
 
     @Test
-    void create() {
+    void createTest() throws Exception {
+        Tag expectedTag = Tag.builder()
+                .id(5)
+                .name("new tag")
+                .build();
+        String expected = "{\"id\":5,\"name\":\"new tag\"}";
+
+        when(service.create(any(String.class))).thenReturn(expectedTag);
+
+        this.mockMvc.perform(post("/tags").param("name","new tag"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(contains(expected)));
     }
 
     @Test
     void findByIdTest() throws Exception {
-        String expected = "[{\"id\":1,\"name\":\"first tag\"}]";
+        String expected = "{\"id\":1,\"name\":\"first tag\"}";
 
-        when(service.findById(any())).thenReturn(tag1);
+        when(service.findById(any(Integer.class))).thenReturn(tag1);
 
-        this.mockMvc.perform(get("/tags/{id}", "1"))
+        this.mockMvc.perform(get("/tags/{id}",1))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expected)));
+                .andExpect(content().string(contains(expected)));
     }
 
     @Test
-    void findByName() {
+    void findByNameTest() throws Exception{
+        String expected = "{\"id\":1,\"name\":\"first tag\"}";
+
+        when(service.findByName(any(String.class))).thenReturn(new LinkedList<>(List.of(tag1)));
+
+        this.mockMvc.perform(get("/tags").param("name","first tag"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(contains(expected)));
     }
 
     @Test
-    void delete() {
+    void deleteTest() throws Exception {
+        when(service.delete(any(Integer.class))).thenReturn(Boolean.TRUE);
+
+        this.mockMvc.perform(delete("/tags/{id}",1))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(contains("true")));
     }
 }
