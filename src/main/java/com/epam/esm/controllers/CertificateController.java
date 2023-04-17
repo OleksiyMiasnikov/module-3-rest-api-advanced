@@ -6,6 +6,7 @@ import com.epam.esm.services.CertificateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +40,8 @@ public class CertificateController{
 
     @PatchMapping("/{id}")
     public Certificate update(@PathVariable("id") int id,
-                              @ModelAttribute @Valid Certificate certificate,
-                              BindingResult bindingResult) {
+                              @RequestBody Certificate certificate) {
         log.info("Controller. Update certificate by id: " + id);
-        if (bindingResult.hasErrors()) {
-            throw new ModuleException(Objects.requireNonNull(bindingResult.getFieldError())
-                    .getDefaultMessage(),
-                    "400001");
-        }
         return service.update(id, certificate);
     }
 

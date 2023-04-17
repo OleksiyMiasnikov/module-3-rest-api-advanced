@@ -1,6 +1,6 @@
 package com.epam.esm.controllers;
 
-import com.epam.esm.exceptions.ModuleExceptionHandler;
+import com.epam.esm.controllers.advice.ModuleExceptionHandler;
 import com.epam.esm.models.Tag;
 import com.epam.esm.services.TagService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,10 +30,8 @@ class TagControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
     @Mock
     TagService service;
-
     @InjectMocks
     TagController subject;
 
@@ -107,7 +104,7 @@ class TagControllerTest {
 
     @Test
     void findByNameTest() throws Exception{
-        String expected = "{\"id\":1,\"name\":\"first tag\"}";
+        String expected = "[{\"id\":1,\"name\":\"first tag\"}]";
 
         when(service.findByName(any(String.class))).thenReturn(new LinkedList<>(List.of(tag1)));
 

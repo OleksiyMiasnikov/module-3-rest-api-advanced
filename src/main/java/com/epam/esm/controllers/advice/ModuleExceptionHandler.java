@@ -1,5 +1,7 @@
-package com.epam.esm.exceptions;
+package com.epam.esm.controllers.advice;
 
+import com.epam.esm.exceptions.ModuleErrorResponse;
+import com.epam.esm.exceptions.ModuleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -44,7 +46,7 @@ public class ModuleExceptionHandler {
         return new ResponseEntity<>(new ModuleErrorResponse(
                 exception.getLocalizedMessage(),
                 exception.getErrorCode()),
-                HttpStatus.BAD_REQUEST);
+                exception.getHtmlStatus());
     }
 
     @ExceptionHandler

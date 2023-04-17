@@ -5,6 +5,7 @@ import com.epam.esm.models.Tag;
 import com.epam.esm.repositories.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,16 +33,6 @@ public class TagService {
         return findById(result);
     }
 
-//    /**
-//     * Finds all tags.
-//     *
-//     * @return List of {@link Tag} List of all tags from database
-//     */
-//    public List<Tag> findAll() {
-//        log.info("Service. Find all tags");
-//        return repo.findAll();
-//    }
-
     /**
      * Finds a {@link Tag} by its id.
      *
@@ -52,7 +43,9 @@ public class TagService {
     public Tag findById(int id) {
         log.info("Service. Find tag by id: " + id);
         Optional<Tag> result = repo.findById(id);
-        return result.orElseThrow(() -> new ModuleException("Requested tag is not found (id=" + id + ")", "40401"));
+        return result.orElseThrow(() -> new ModuleException("Requested tag is not found (id=" + id + ")",
+                "40401",
+                HttpStatus.NOT_FOUND));
     }
 
     /**

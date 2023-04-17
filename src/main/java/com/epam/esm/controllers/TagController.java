@@ -23,12 +23,6 @@ public class TagController{
         return service.create(tag.getName());
     }
 
-//    @GetMapping()
-//    public List<Tag> findAll() {
-//        log.info("Controller. Find all tags");
-//        return service.findAll();
-//    }
-
     @GetMapping("/{id}")
     public Tag findById(@PathVariable("id") int id) {
         log.info("Controller. Find tag by id: " + id);

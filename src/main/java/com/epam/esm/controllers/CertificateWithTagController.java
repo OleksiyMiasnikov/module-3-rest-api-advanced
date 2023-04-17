@@ -21,20 +21,14 @@ public class CertificateWithTagController{
     private final CertificateWithTagService service;
 
     @PostMapping()
-    public CertificateWithTag create(@ModelAttribute @Valid CertificateWithTag certificateWithTag,
-                                     BindingResult bindingResult) {
+    public CertificateWithTag create(@Valid @ModelAttribute CertificateWithTag certificateWithTag) {
         log.info("Controller. Create certificate with tag and name: "
                 + certificateWithTag.getName());
-        if (bindingResult.hasErrors()) {
-            throw new ModuleException(Objects.requireNonNull(bindingResult.getFieldError())
-                    .getDefaultMessage(),
-                    "400001");
-        }
         return service.create(certificateWithTag);
     }
 
     @GetMapping()
-    public List<CertificateWithTag> findAll(@ModelAttribute("sort_by_name") String sortByName,
+    public List<CertificateWithTag> findAll(@RequestParam("sort_by") String sortByName,
                                             @ModelAttribute("sort_by_date") String sortByDate) {
         log.info("Controller. Find all certificates with tags");
         return service.findAll(sortByName.toUpperCase(), sortByDate.toUpperCase());

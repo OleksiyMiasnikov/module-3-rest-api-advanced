@@ -6,6 +6,7 @@ import com.epam.esm.repositories.CertificateRepository;
 import com.epam.esm.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -62,7 +63,9 @@ public class CertificateService {
         log.info("Service. Find certificate by id: " + id);
 
         return repo.findById(id)
-                .orElseThrow(() -> new ModuleException("Requested certificate is not found (id=" + id + ")", "40411"));
+                .orElseThrow(() -> new ModuleException("Requested certificate is not found (id=" + id + ")",
+                                        "40411",
+                                        HttpStatus.NOT_FOUND));
     }
 
     /**
