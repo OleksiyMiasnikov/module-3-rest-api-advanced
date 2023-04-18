@@ -87,7 +87,7 @@ class CertificateWithTagServiceTest {
         when(mapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
         when(tagRepo.findByName(certificateWithTag.getTag())).thenReturn(List.of());
         when(certificateRepo.create(any())).thenReturn(certificateId);
-        when(tagRepo.create(certificateWithTag.getTag())).thenReturn(tagId);
+        when(tagRepo.create(any(Tag.class))).thenReturn(tagId);
         when(repo.findByTagIdAndCertificateId(tagId, certificateId))
                 .thenReturn(Optional.of(certificateWithTag));
 

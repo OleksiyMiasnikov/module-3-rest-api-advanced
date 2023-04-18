@@ -33,9 +33,9 @@ class TagRepositoryTest {
                 "  name VARCHAR(45)," +
                 "  PRIMARY KEY (id))";
         jdbcTemplate.update(CREATE_TABLE);
-        repo.create("tag_1");
-        repo.create("tag_2");
-        repo.create("tag_3");
+        repo.create(Tag.builder().name("tag_1").build());
+        repo.create(Tag.builder().name("tag_2").build());
+        repo.create(Tag.builder().name("tag_3").build());
     }
     @AfterEach
     void tearEach(){
@@ -46,7 +46,7 @@ class TagRepositoryTest {
     @Test
     void create() {
         String name = "test-tag";
-        int createdId = repo.create(name);
+        int createdId = repo.create(Tag.builder().name(name).build());
         assertThat(createdId).isNotNegative();
     }
 

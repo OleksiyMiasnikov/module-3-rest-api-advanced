@@ -1,7 +1,10 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.CreateTagRequest;
+import com.epam.esm.model.DTO.TagDTO;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
+import com.epam.esm.service.mapper.TagMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +20,12 @@ public class TagController{
 
     private final TagService service;
 
+    private final TagMapper tagMapper;
+
     @PostMapping()
-    public Tag create(@Valid @RequestBody Tag tag) {
-        log.info("Controller. Create tag with name: " + tag.getName());
-        return service.create(tag.getName());
+    public TagDTO create(@Valid @RequestBody CreateTagRequest createTagRequest) {
+        log.info("Controller. Create tag with name: " + createTagRequest.getName());
+        return tagMapper.toDTO(service.create(createTagRequest));
     }
 
     @GetMapping("/{id}")

@@ -1,8 +1,10 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
+import com.epam.esm.model.DTO.CreateTagRequest;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
+import com.epam.esm.service.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,16 +22,18 @@ import java.util.Optional;
 public class TagService {
 
     private final TagRepository repo;
+    private final TagMapper mapper;
 
     /**
      * Creates a new tag.
      *
-     * @param name - name of new tag
+     * @param createTagRequest - createTagRequest of new tag
      * @return {@link Tag} created tag
      */
-    public Tag create(String name) {
-        log.info("Service. Create tag with name: " + name);
-        int result = repo.create(name);
+    public Tag create(CreateTagRequest createTagRequest) {
+        log.info("Service. Create a new tag.");
+        Tag tag = mapper.toTag(createTagRequest);
+        int result = repo.create(tag);
         return findById(result);
     }
 

@@ -1,7 +1,9 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.DTO.CreateTagRequest;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
+import com.epam.esm.service.mapper.TagMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,19 +14,22 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
     @Mock
     private TagRepository repo;
+    @Mock
+    private TagMapper mapper;
     private TagService subject;
     Tag tag;
     int id = 1;
     String name = "tag1";
     @BeforeEach
     void setUp(){
-        subject = new TagService(repo);
+        subject = new TagService(repo, mapper);
         tag = Tag.builder()
                 .id(id)
                 .name(name)
@@ -33,9 +38,12 @@ class TagServiceTest {
 
     @Test
     void create() {
-        when(repo.create(name)).thenReturn(id);
+
+        when(repo.create(any(Tag.class))).thenReturn(id);
         when(repo.findById(id)).thenReturn(Optional.of(tag));
-        Tag result = subject.create(name);
+        when(mapper.toTag(any(CreateTagRequest.class))).thenReturn(Tag.builder().name(name).build());
+
+        Tag result = subject.create(new CreateTagRequest(name));
         assertThat(result).isEqualTo(tag);
     }
 

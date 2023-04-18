@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.config.DateUtil;
+import com.epam.esm.model.DTO.CreateTagRequest;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -47,7 +48,10 @@ public class CertificateWithTagService{
         int tagId;
         List<Tag> tagList = tagRepo.findByName(certificateWithTag.getTag());
         if (tagList.size() == 0) {
-            tagId = tagRepo.create(certificateWithTag.getTag());
+            Tag tag = Tag.builder()
+                    .name(certificateWithTag.getTag())
+                    .build();
+            tagId = tagRepo.create(tag);
         } else {
             tagId = tagList.get(0).getId();
         }

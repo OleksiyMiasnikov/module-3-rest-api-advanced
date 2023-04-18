@@ -22,15 +22,15 @@ public class TagRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public int create(String name) {
-        log.info("Repository. Create tag with name: " + name);
+    public int create(Tag tag) {
+        log.info("Repository. Create a new tag");
         final String SQL = "INSERT INTO tag VALUES (default, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
                     .prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, name);
+            ps.setString(1, tag.getName());
             return ps;
         }, keyHolder);
 

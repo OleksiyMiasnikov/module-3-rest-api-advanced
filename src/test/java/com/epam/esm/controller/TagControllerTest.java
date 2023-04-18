@@ -1,8 +1,11 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.controller.advice.ModuleExceptionHandler;
+import com.epam.esm.model.DTO.CreateTagRequest;
+import com.epam.esm.model.DTO.TagDTO;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
+import com.epam.esm.service.mapper.TagMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,6 +35,8 @@ class TagControllerTest {
     MockMvc mockMvc;
     @Mock
     TagService service;
+    @Mock
+    TagMapper mapper;
     @InjectMocks
     TagController subject;
 
@@ -80,8 +85,13 @@ class TagControllerTest {
                 .id(5)
                 .name("new tag")
                 .build();
+        TagDTO tagDTO = TagDTO.builder()
+                .id(5)
+                .name("new tag")
+                .build();
 
-        when(service.create(any(String.class))).thenReturn(expectedTag);
+        when(mapper.toDTO(expectedTag)).thenReturn(tagDTO);
+        when(service.create(any(CreateTagRequest.class))).thenReturn(expectedTag);
 
         this.mockMvc.perform(post("/tags")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +101,7 @@ class TagControllerTest {
                 .andExpect(jsonPath("$.id").value(expectedTag.getId()))
                 .andExpect(jsonPath("$.name").value(expectedTag.getName()));
 
-        verify(service).create("new tag");
+        verify(service).create(any(CreateTagRequest.class));
     }
 
     @Test
