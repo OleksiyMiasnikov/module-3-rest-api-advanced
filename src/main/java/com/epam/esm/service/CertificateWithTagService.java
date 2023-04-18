@@ -1,6 +1,8 @@
 package com.epam.esm.service;
 
+import com.epam.esm.config.DateUtil;
 import com.epam.esm.model.DTO.SortingEntity;
+import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.CertificateRepository;
@@ -50,7 +52,10 @@ public class CertificateWithTagService{
             tagId = tagList.get(0).getId();
         }
 
-        int certificateId = certificateRepo.create(certificateMapper.toCertificate(certificateWithTag));
+        Certificate certificate = certificateMapper.toCertificate(certificateWithTag);
+        certificate.setCreateDate(DateUtil.getDate());
+        certificate.setLastUpdateDate(DateUtil.getDate());
+        int certificateId = certificateRepo.create(certificate);
         repo.create(tagId, certificateId);
 
         return repo.findByTagIdAndCertificateId(tagId, certificateId).orElse(null);

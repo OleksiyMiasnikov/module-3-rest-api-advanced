@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.DTO.SortingEntity;
+import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.CertificateRepository;
@@ -19,7 +20,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateWithTagServiceTest {
@@ -33,7 +35,7 @@ class CertificateWithTagServiceTest {
     CertificateWithTagService subject;
     @Mock
     CertificateMapper mapper;
-
+    @Mock
     SortingEntityMapper sortingEntityMapper;
 
     CertificateWithTag certificateWithTag;
@@ -63,11 +65,16 @@ class CertificateWithTagServiceTest {
                 .name("tag_name")
                 .build();
         int certificateId = 1;
+        Certificate certificate = new Certificate();
+
+        when(mapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
         when(tagRepo.findByName(certificateWithTag.getTag())).thenReturn(List.of(tag));
         when(certificateRepo.create(any())).thenReturn(certificateId);
         when(repo.findByTagIdAndCertificateId(tag.getId(), certificateId))
                 .thenReturn(Optional.of(certificateWithTag));
+
         assertThat(subject.create(certificateWithTag)).isEqualTo(certificateWithTag);
+
         verify(repo).create(tag.getId(), certificateId);
     }
 
@@ -75,21 +82,30 @@ class CertificateWithTagServiceTest {
     void createWithNewTag() {
         int certificateId = 1;
         int tagId = 5;
+        Certificate certificate = new Certificate();
+
+        when(mapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
         when(tagRepo.findByName(certificateWithTag.getTag())).thenReturn(List.of());
         when(certificateRepo.create(any())).thenReturn(certificateId);
         when(tagRepo.create(certificateWithTag.getTag())).thenReturn(tagId);
         when(repo.findByTagIdAndCertificateId(tagId, certificateId))
                 .thenReturn(Optional.of(certificateWithTag));
+
         assertThat(subject.create(certificateWithTag)).isEqualTo(certificateWithTag);
-        //verify(validator).validate(certificateWithTag);
+
         verify(repo).create(tagId, certificateId);
     }
 
     @Test
     void findAll() {
         SortingEntity sortingEntity = new SortingEntity("name", "ASC");
+
+        when(sortingEntityMapper.toSortBy(any(SortingEntity.class)))
+                .thenReturn(sortingEntity);
         when(repo.findAll(sortingEntity)).thenReturn(List.of(certificateWithTag));
+
         List<CertificateWithTag> result = subject.findAll(sortingEntity);
+
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).isEqualTo(List.of(certificateWithTag));
     }
@@ -97,8 +113,12 @@ class CertificateWithTagServiceTest {
     @Test
     void findByTagName() {
         SortingEntity sortingEntity = new SortingEntity("name", "ASC");
+
+        when(sortingEntityMapper.toSortBy(any(SortingEntity.class)))
+                .thenReturn(sortingEntity);
         when(repo.findByTagName("tag 1", sortingEntity))
                 .thenReturn(List.of(certificateWithTag));
+
         List<CertificateWithTag> result = subject
                 .findByTagName("tag 1", sortingEntity);
         assertThat(result).isEqualTo(List.of(certificateWithTag));

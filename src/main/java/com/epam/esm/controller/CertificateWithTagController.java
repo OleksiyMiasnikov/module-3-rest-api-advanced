@@ -20,7 +20,7 @@ public class CertificateWithTagController{
 
 
     @PostMapping()
-    public CertificateWithTag create(@Valid @ModelAttribute CertificateWithTag certificateWithTag) {
+    public CertificateWithTag create(@Valid @RequestBody CertificateWithTag certificateWithTag) {
         log.info("Controller. Create certificate with tag and name: "
                 + certificateWithTag.getName());
         return service.create(certificateWithTag);
