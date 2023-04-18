@@ -1,12 +1,13 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
-import com.epam.esm.validator.SortingValidator;
+import com.epam.esm.service.mapper.SortingEntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +30,11 @@ class CertificateWithTagServiceTest {
     @Mock
     CertificateRepository certificateRepo;
     @Mock
-    SortingValidator sortingValidator;
     CertificateWithTagService subject;
     @Mock
     CertificateMapper mapper;
+
+    SortingEntityMapper sortingEntityMapper;
 
     CertificateWithTag certificateWithTag;
 
@@ -41,8 +43,8 @@ class CertificateWithTagServiceTest {
         subject = new CertificateWithTagService(repo,
                 tagRepo,
                 certificateRepo,
-                sortingValidator,
-                mapper);
+                mapper,
+                sortingEntityMapper);
         certificateWithTag = CertificateWithTag.builder()
                 .tag("tag_name")
                 .name("certificate 1")
@@ -85,20 +87,21 @@ class CertificateWithTagServiceTest {
 
     @Test
     void findAll() {
-        when(repo.findAll("ASC", "ASC")).thenReturn(List.of(certificateWithTag));
-        List<CertificateWithTag> result = subject.findAll("ASC", "ASC");
+        SortingEntity sortingEntity = new SortingEntity("name", "ASC");
+        when(repo.findAll(sortingEntity)).thenReturn(List.of(certificateWithTag));
+        List<CertificateWithTag> result = subject.findAll(sortingEntity);
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).isEqualTo(List.of(certificateWithTag));
     }
 
     @Test
     void findByTagName() {
-        when(repo.findByTagName("tag 1", "ASC", "ASC"))
+        SortingEntity sortingEntity = new SortingEntity("name", "ASC");
+        when(repo.findByTagName("tag 1", sortingEntity))
                 .thenReturn(List.of(certificateWithTag));
         List<CertificateWithTag> result = subject
-                .findByTagName("tag 1", "ASC", "ASC");
+                .findByTagName("tag 1", sortingEntity);
         assertThat(result).isEqualTo(List.of(certificateWithTag));
-        verify(sortingValidator, times(2)).validate(any());
     }
 
     @Test

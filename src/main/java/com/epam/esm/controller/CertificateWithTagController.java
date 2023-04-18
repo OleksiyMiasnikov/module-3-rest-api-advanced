@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ public class CertificateWithTagController{
 
     private final CertificateWithTagService service;
 
+
     @PostMapping()
     public CertificateWithTag create(@Valid @ModelAttribute CertificateWithTag certificateWithTag) {
         log.info("Controller. Create certificate with tag and name: "
@@ -25,22 +27,22 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    public List<CertificateWithTag> findAll(@RequestParam("sort_by") String sortByName,
-                                            @ModelAttribute("sort_by_date") String sortByDate) {
+    public List<CertificateWithTag> findAll(
+            @Valid @ModelAttribute("sort_by")SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tags");
-        return service.findAll(sortByName.toUpperCase(), sortByDate.toUpperCase());
+        return service.findAll(sortingEntity);
     }
 
     @GetMapping("/tag/{name}")
     public List<CertificateWithTag> findByTagName(@PathVariable("name") String name,
-                                                  @ModelAttribute("sort_by_name") String sortByName,
-                                                  @ModelAttribute("sort_by_date") String sortByDate) {
+            @Valid @ModelAttribute("sort_by") SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
-        return service.findByTagName(name, sortByName.toUpperCase(), sortByDate.toUpperCase());
+        return service.findByTagName(name, sortingEntity);
     }
 
     @GetMapping("/search/{pattern}")
-    public List<CertificateWithTag> findByPartOfNameOrDescription(@PathVariable("pattern") String pattern) {
+    public List<CertificateWithTag> findByPartOfNameOrDescription(
+            @PathVariable("pattern") String pattern) {
         log.info("Controller. Find certificate by part of name or description");
         return service.findByPartOfNameOrDescription(pattern);
     }

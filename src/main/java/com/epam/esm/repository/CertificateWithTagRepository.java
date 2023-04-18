@@ -1,5 +1,6 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.CertificateWithTag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,16 +45,22 @@ public class CertificateWithTagRepository {
                 tagId, certificateId);
     }
 
-    public List<CertificateWithTag> findAll(String sortByName, String sortByDate) {
+    public List<CertificateWithTag> findAll(SortingEntity sortingEntity) {
         log.info("Repository. Find all certificates with tags");
-        String sql = String.format(JOIN_SQL, "ORDER by name " + sortByName + ", create_date " + sortByDate);
+        String sql = String.format(JOIN_SQL, "ORDER by " +
+                sortingEntity.getField() +
+                " " +
+                sortingEntity.getDirection());
         return jdbcTemplate.query(sql,
                 new CertificateWithTagMapper());
     }
 
-    public List<CertificateWithTag> findByTagName(String name, String sortByName, String sortByDate) {
+    public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Repository. Find all certificates with tag: " + name);
-        String sql = String.format(JOIN_SQL, "ORDER by name " + sortByName + ", create_date " + sortByDate);
+        String sql = String.format(JOIN_SQL, "ORDER by " +
+                sortingEntity.getField() +
+                " " +
+                sortingEntity.getDirection());
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",
                         new Object[]{name},
                         new CertificateWithTagMapper());

@@ -1,12 +1,13 @@
 package com.epam.esm.service;
 
+import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
-import com.epam.esm.validator.SortingValidator;
+import com.epam.esm.service.mapper.SortingEntityMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,8 @@ public class CertificateWithTagService{
     private final CertificateWithTagRepository repo;
     private final TagRepository tagRepo;
     private final CertificateRepository certificateRepo;
-    private final SortingValidator sortingValidator;
     private final CertificateMapper certificateMapper;
+    private final SortingEntityMapper sortingEntityMapper;
 
     /**
      * Creates new record of certificate with tag.
@@ -59,18 +60,12 @@ public class CertificateWithTagService{
      * Finds all certificates with tags.
      * Result will be sorted by name and created date
      *
-     * @param sortByDate sorting criterion of date
-     * @param sortByName sorting criterion of name
+     * @param sortingEntity sorting criterion
      * @return List of {@link CertificateWithTag} List of all certificates with tags from database
      */
-    public List<CertificateWithTag> findAll(String sortByName, String sortByDate) {
+    public List<CertificateWithTag> findAll(SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tags");
-        // validate sorting parameters
-
-        sortingValidator.validate(sortByDate);
-        sortingValidator.validate(sortByName);
-
-        return repo.findAll(sortByName, sortByDate);
+        return repo.findAll(sortingEntityMapper.toSortBy(sortingEntity));
     }
 
     /**
@@ -78,17 +73,12 @@ public class CertificateWithTagService{
      * Result will be sorted by name and created date
      *
      * @param name name of tag
-     * @param sortByDate sorting criterion of date
-     * @param sortByName sorting criterion of name
+     * @param sortingEntity sorting criterion
      * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
      */
-    public List<CertificateWithTag> findByTagName(String name, String sortByName, String sortByDate) {
+    public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
-        // validate sorting parameters
-        sortingValidator.validate(sortByDate);
-        sortingValidator.validate(sortByName);
-
-        return repo.findByTagName(name, sortByName, sortByDate);
+        return repo.findByTagName(name, sortingEntityMapper.toSortBy(sortingEntity));
     }
 
     /**
