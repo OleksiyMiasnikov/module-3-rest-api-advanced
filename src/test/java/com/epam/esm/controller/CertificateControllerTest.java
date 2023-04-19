@@ -95,7 +95,31 @@ class CertificateControllerTest {
                 "\"description\":\"description of certificate 3\"," +
                 "\"price\":150.0," +
                 "\"duration\":14,";
+        CertificateDTO certificateDto1 = CertificateDTO.builder()
+                .id(1)
+                .name("certificate 1")
+                .description("description of certificate 1")
+                .price(15.5)
+                .duration(5)
+                .build();
+        CertificateDTO certificateDto2 = CertificateDTO.builder()
+                .id(2)
+                .name("certificate 2")
+                .description("description of certificate 2")
+                .price(21.0)
+                .duration(10)
+                .build();
+        CertificateDTO certificateDto3 = CertificateDTO.builder()
+                .id(3)
+                .name("certificate 3")
+                .description("description of certificate 3")
+                .price(150d)
+                .duration(14)
+                .build();
         when(service.findAll()).thenReturn(list);
+        when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
+        when(mapper.toDTO(certificate2)).thenReturn(certificateDto2);
+        when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
         this.mockMvc.perform(get("/certificates"))
                 .andDo(print())

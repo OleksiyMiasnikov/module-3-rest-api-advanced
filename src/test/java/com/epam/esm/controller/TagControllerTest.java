@@ -42,6 +42,8 @@ class TagControllerTest {
 
     private final Tag tag1;
     private final Tag tag2;
+    private final TagDTO tagDto1;
+    private final TagDTO tagDto2;
 
     private final List<Tag> listOfTwoTags;
 
@@ -54,6 +56,14 @@ class TagControllerTest {
                 .id(2)
                 .name("second tag")
                 .build();
+        tagDto1 = TagDTO.builder()
+                .id(1)
+                .name("first tag")
+                .build();
+        tagDto2 = TagDTO.builder()
+                .id(2)
+                .name("second tag")
+                .build();
         listOfTwoTags = new LinkedList<>(List.of(tag1, tag2));
     }
 
@@ -62,20 +72,6 @@ class TagControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(subject)
                 .setControllerAdvice(new ModuleExceptionHandler())
                 .build();
-    }
-
-    @Test
-    void findAllTest() throws Exception {
-        String expected = "[{\"id\":1,\"name\":\"first tag\"},{\"id\":2,\"name\":\"second tag\"}]";
-
-        when(service.findByName("")).thenReturn(listOfTwoTags);
-
-        this.mockMvc.perform(get("/tags"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(expected));
-
-        verify(service).findByName("");
     }
 
     @Test
@@ -120,7 +116,10 @@ class TagControllerTest {
     @Test
     void findByNameTest() throws Exception{
         String expected = "[{\"id\":2,\"name\":\"second tag\"}]";
+
         when(service.findByName(any(String.class))).thenReturn(new LinkedList<>(List.of(tag2)));
+        when(mapper.toDTO(tag1)).thenReturn(tagDto1);
+        when(mapper.toDTO(tag2)).thenReturn(tagDto2);
 
         this.mockMvc.perform(get("/tags").param("name","first tag"))
                 .andDo(print())
@@ -128,6 +127,22 @@ class TagControllerTest {
                 .andExpect(content().string(expected));
 
         verify(service).findByName("first tag");
+    }
+
+    @Test
+    void findAllTest() throws Exception {
+        String expected = "[{\"id\":1,\"name\":\"first tag\"},{\"id\":2,\"name\":\"second tag\"}]";
+
+        when(service.findByName("")).thenReturn(listOfTwoTags);
+        when(mapper.toDTO(tag1)).thenReturn(tagDto1);
+        when(mapper.toDTO(tag2)).thenReturn(tagDto2);
+
+        this.mockMvc.perform(get("/tags"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(expected));
+
+        verify(service).findByName("");
     }
 
     @Test
