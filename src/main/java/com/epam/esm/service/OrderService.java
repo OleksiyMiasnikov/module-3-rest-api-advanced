@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,4 +60,8 @@ public class OrderService {
         return repo.findAll();
     }
 
+    public List<Order> findByUser(String user) {
+        log.info("Controller. Find all orders by user: " + user);
+        return repo.findByUser(user);
+    }
 }

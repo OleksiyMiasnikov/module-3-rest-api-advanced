@@ -43,7 +43,12 @@ public class OrderMapper {
         return OrderDTO.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
+                .userName(order.getUserName())
                 .CertificateWithTagId(order.getCertificateWithTagId())
+                .tagName(order.getTagName())
+                .certificateName(order.getCertificateName())
+                .description(order.getDescription())
+                .duration(order.getDuration())
                 .cost(order.getCost())
                 .createDate(formatter.format(order.getCreateDate()))
                 .build();

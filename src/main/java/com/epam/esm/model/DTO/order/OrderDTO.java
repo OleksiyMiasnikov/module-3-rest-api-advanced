@@ -14,7 +14,12 @@ import java.time.Instant;
 public class OrderDTO {
     private int id;
     private int userId;
+    private String userName;
     private int CertificateWithTagId;
+    private String tagName;
+    private String certificateName;
+    private String description;
+    private Integer duration;
     private Double cost;
     private String createDate;
 }

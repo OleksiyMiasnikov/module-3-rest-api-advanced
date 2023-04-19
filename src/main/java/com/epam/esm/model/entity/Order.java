@@ -1,9 +1,5 @@
 package com.epam.esm.model.entity;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +14,12 @@ import java.time.Instant;
 public class Order {
     private int id;
     private int userId;
+    private String userName;
     private int CertificateWithTagId;
+    private String tagName;
+    private String certificateName;
+    private String description;
+    private Integer duration;
     private Double cost;
     private Instant createDate;
 }

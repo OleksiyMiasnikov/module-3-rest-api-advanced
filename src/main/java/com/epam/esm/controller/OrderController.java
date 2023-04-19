@@ -33,4 +33,10 @@ public class OrderController {
         return service.findAll().stream().map(mapper::toDTO).toList();
     }
 
+    @GetMapping("/{user}")
+    public List<OrderDTO> findByUser(@Valid @PathVariable("user") String user) {
+        log.info("Controller. Find all orders by user: " + user);
+        return service.findByUser(user).stream().map(mapper::toDTO).toList();
+    }
+
 }

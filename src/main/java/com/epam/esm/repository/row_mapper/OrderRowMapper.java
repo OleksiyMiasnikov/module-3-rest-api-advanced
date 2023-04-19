@@ -14,10 +14,15 @@ public class OrderRowMapper implements RowMapper<Order> {
     public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Order.builder()
                 .id(rs.getInt("id"))
+                .userId(rs.getInt("user_id"))
+                .userName(rs.getString("user_name"))
+                .CertificateWithTagId(rs.getInt("certificate_with_tag_id"))
+                .tagName(rs.getString("tag_name"))
+                .certificateName(rs.getString("certificate_name"))
+                .description(rs.getString("description"))
+                .duration(rs.getInt("duration"))
                 .cost(rs.getDouble("cost"))
                 .createDate(rs.getTimestamp("create_date").toInstant())
-                .userId(rs.getInt("user_id"))
-                .CertificateWithTagId(rs.getInt("certificate_with_tag_id"))
                 .build();
     }
 }
