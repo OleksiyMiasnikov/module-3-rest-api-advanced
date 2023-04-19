@@ -1,8 +1,10 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
+import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
+import com.epam.esm.service.mapper.CertificateMapper;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,21 +26,28 @@ class CertificateServiceTest {
 
     @Mock
     private CertificateRepository repo;
+    @Mock
+    private CertificateMapper mapper;
 
     private CertificateService subject;
     Certificate certificate;
+    CreateCertificateRequest certificateRequest;
     int id = 1;
     @BeforeEach
     void setUp(){
-        subject = new CertificateService(repo);
+        subject = new CertificateService(repo, mapper);
         certificate = Certificate.builder()
                 .id(id)
                 .name("certificate 1")
                 .description("description of certificate 1")
                 .price(15.5)
                 .duration(5)
-                .createDate("")
-                .lastUpdateDate("")
+                .build();
+        certificateRequest = CreateCertificateRequest.builder()
+                .name("certificate 1")
+                .description("description of certificate 1")
+                .price(15.5)
+                .duration(5)
                 .build();
     }
 
@@ -46,7 +55,9 @@ class CertificateServiceTest {
     void create() {
         when(repo.create(certificate)).thenReturn(id);
         when(repo.findById(id)).thenReturn(Optional.of(certificate));
-        Certificate result = subject.create(certificate);
+        when(mapper.toCertificate(any(CreateCertificateRequest.class))).thenReturn(certificate);
+
+        Certificate result = subject.create(certificateRequest);
         assertThat(result).isEqualTo(certificate);
     }
 
@@ -58,8 +69,6 @@ class CertificateServiceTest {
                 .description("description of certificate 2")
                 .price(25.5)
                 .duration(15)
-                .createDate("")
-                .lastUpdateDate("")
                 .build();
         when(repo.findAll()).thenReturn(List.of(certificate, certificate2));
         List<Certificate> result = subject.findAll();
@@ -116,8 +125,6 @@ class CertificateServiceTest {
                 .id(++id)
                 .description("description of certificate 2")
                 .duration(15)
-                .createDate("")
-                .lastUpdateDate("")
                 .build();
         Certificate certificate3 = Certificate.builder()
                 .id(id)
@@ -125,8 +132,6 @@ class CertificateServiceTest {
                 .description("description of certificate 2")
                 .price(15.5)
                 .duration(15)
-                .createDate("")
-                .lastUpdateDate("")
                 .build();
         when(repo.findById(id)).thenReturn(Optional.of(certificate), Optional.of(certificate3));
 

@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Slf4j
-public class CertificateWithTagMapper implements RowMapper<CertificateWithTag> {
+public class CertificateWithTagRowMapper implements RowMapper<CertificateWithTag> {
     @Override
     public CertificateWithTag mapRow(ResultSet rs, int rowNum) throws SQLException {
         //log.info("Mapper loaded");

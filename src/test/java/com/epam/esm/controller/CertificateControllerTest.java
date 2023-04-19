@@ -1,8 +1,11 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.controller.advice.ModuleExceptionHandler;
+import com.epam.esm.model.DTO.certificate.CertificateDTO;
+import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.mapper.CertificateMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,6 +35,8 @@ class CertificateControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Mock
+    private CertificateMapper mapper;
 
     @Mock
     CertificateService service;
@@ -117,8 +122,16 @@ class CertificateControllerTest {
                 .price(153.45)
                 .duration(8)
                 .build();
+        CertificateDTO expectedDTO = CertificateDTO.builder()
+                .id(5)
+                .name("new certificate")
+                .description("description of new certificate")
+                .price(153.45)
+                .duration(8)
+                .build();
 
-        when(service.create(any(Certificate.class))).thenReturn(expectedCertificate);
+        when(service.create(any(CreateCertificateRequest.class))).thenReturn(expectedCertificate);
+        when(mapper.toDTO(any(Certificate.class))).thenReturn(expectedDTO);
 
         this.mockMvc.perform(post("/certificates")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +144,7 @@ class CertificateControllerTest {
                 .andExpect(jsonPath("$.price").value(expectedCertificate.getPrice()))
                 .andExpect(jsonPath("$.duration").value(expectedCertificate.getDuration()));
 
-        verify(service).create(any(Certificate.class));
+        verify(service).create(any(CreateCertificateRequest.class));
     }
 
     @Test

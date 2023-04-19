@@ -3,7 +3,6 @@ package com.epam.esm.repository;
 import com.epam.esm.model.entity.Certificate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -46,14 +45,14 @@ public class CertificateRepository {
     public List<Certificate> findAll() {
         log.info("Repository. Find all certificates");
         return jdbcTemplate.query("SELECT * FROM certificate",
-                new BeanPropertyRowMapper<>(Certificate.class));
+                new CertificateRowMapper());
     }
 
     public Optional<Certificate> findById(int id){
         log.info("Repository. Find certificate by id: " + id);
         return jdbcTemplate.query("SELECT * FROM certificate WHERE id=?",
                         new Object[]{id},
-                        new BeanPropertyRowMapper<>(Certificate.class))
+                        new CertificateRowMapper())
                 .stream()
                 .findAny();
     }

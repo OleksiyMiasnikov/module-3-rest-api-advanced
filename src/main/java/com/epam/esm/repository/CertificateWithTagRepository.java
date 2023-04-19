@@ -52,7 +52,7 @@ public class CertificateWithTagRepository {
                 " " +
                 sortingEntity.getDirection());
         return jdbcTemplate.query(sql,
-                new CertificateWithTagMapper());
+                new CertificateWithTagRowMapper());
     }
 
     public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
@@ -63,7 +63,7 @@ public class CertificateWithTagRepository {
                 sortingEntity.getDirection());
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",
                         new Object[]{name},
-                        new CertificateWithTagMapper());
+                        new CertificateWithTagRowMapper());
     }
 
     public Optional<CertificateWithTag> findByTagIdAndCertificateId(Integer tagId, Integer certificateId) {
@@ -73,7 +73,7 @@ public class CertificateWithTagRepository {
                         sql +
                         ") all_tb WHERE all_tb.tag_id=? AND all_tb.certificate_id=?",
                 new Object[]{tagId, certificateId},
-                new CertificateWithTagMapper())
+                new CertificateWithTagRowMapper())
                 .stream()
                 .findAny();
     }
@@ -82,6 +82,6 @@ public class CertificateWithTagRepository {
         log.info("Repository. Find certificate by part of name or description");
         return jdbcTemplate.query("call find_by_part(?)",
                 new Object[]{pattern},
-                new CertificateWithTagMapper());
+                new CertificateWithTagRowMapper());
     }
 }

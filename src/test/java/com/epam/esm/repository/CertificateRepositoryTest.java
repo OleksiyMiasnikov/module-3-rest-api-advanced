@@ -1,5 +1,6 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.config.DateUtil;
 import com.epam.esm.model.entity.Certificate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,8 +25,8 @@ class CertificateRepositoryTest {
                 .description("description of certificate_1")
                 .price(10.50)
                 .duration(2)
-                .createDate("")
-                .lastUpdateDate("")
+                .createDate(DateUtil.getDate())
+                .lastUpdateDate(DateUtil.getDate())
                 .build();
     private final Certificate certificate_2 = Certificate.builder()
                 .id(2)
@@ -33,8 +34,8 @@ class CertificateRepositoryTest {
                 .description("description of certificate_2")
                 .price(120.50)
                 .duration(5)
-                .createDate("")
-                .lastUpdateDate("")
+                .createDate(DateUtil.getDate())
+                .lastUpdateDate(DateUtil.getDate())
                 .build();
     private final Certificate certificate_3 = Certificate.builder()
                 .id(3)
@@ -42,8 +43,8 @@ class CertificateRepositoryTest {
                 .description("description of certificate_3")
                 .price(1000.50)
                 .duration(25)
-                .createDate("")
-                .lastUpdateDate("")
+                .createDate(DateUtil.getDate())
+                .lastUpdateDate(DateUtil.getDate())
                 .build();
 
     private DataSource dataSource() {
@@ -81,8 +82,8 @@ class CertificateRepositoryTest {
                 .description("description of certificate_4")
                 .price(600.50)
                 .duration(15)
-                .createDate("")
-                .lastUpdateDate("")
+                .createDate(DateUtil.getDate())
+                .lastUpdateDate(DateUtil.getDate())
                 .build();
         int createdId = repo.create(certificate);
         assertThat(createdId).isNotNegative();
