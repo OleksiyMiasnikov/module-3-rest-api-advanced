@@ -15,13 +15,26 @@ VALUES
 (3, 'cert_3 ZXC', 'certificate with #3 QWE', 300, 30, '2023-04-04T11:30:14.868', '2023-04-04T11:30:14.868'),
 (4, 'cert_4 QWE', 'certificate with #4', 400, 45, '2023-04-05T11:30:14.868', '2023-04-05T11:30:14.868');
 
-INSERT INTO `certificate_with_tag` (`tag_id`, `certificate_id`)
+INSERT INTO `certificate_with_tag` (`id`, `tag_id`, `certificate_id`)
 VALUES
-(1, 1),
-(1, 4),
-(2, 3),
-(3, 3),
-(3, 2),
-(3, 4),
-(4, 1),
-(4, 2);
+(1, 1, 1),
+(2, 1, 4),
+(3, 2, 3),
+(4, 3, 3),
+(5, 3, 2),
+(6, 3, 4),
+(7, 4, 1),
+(8, 4, 2);
+
+INSERT INTO `user` (`id`, `name`)
+VALUES
+(1, 'user_1'),
+(2, 'user_2'),
+(3, 'user_3');
+
+INSERT INTO `user_order` (`id`, `cost`, `create_date`, `user_id`, `certificate_with_tag_id`)
+VALUES
+(1, 150.00, '2023-04-02T11:30:14.868', 1, 1),
+(2, 215.15, '2023-04-05T11:30:14.868', 2, 4),
+(3, 350.50, '2023-04-04T11:30:14.868', 3, 2);
+

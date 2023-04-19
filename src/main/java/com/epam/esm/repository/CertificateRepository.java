@@ -1,6 +1,7 @@
 package com.epam.esm.repository;
 
 import com.epam.esm.model.entity.Certificate;
+import com.epam.esm.repository.row_mapper.CertificateRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;

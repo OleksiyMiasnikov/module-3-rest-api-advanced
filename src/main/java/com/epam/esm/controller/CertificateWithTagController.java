@@ -40,6 +40,12 @@ public class CertificateWithTagController{
         return service.findByTagName(name, sortingEntity);
     }
 
+    @GetMapping("/{id}")
+    public CertificateWithTag findById(@PathVariable("id") int id) {
+        log.info("Controller. Find certificate with tag by id: " + id);
+        return service.findById(id);
+    }
+
     @GetMapping("/search/{pattern}")
     public List<CertificateWithTag> findByPartOfNameOrDescription(
             @PathVariable("pattern") String pattern) {

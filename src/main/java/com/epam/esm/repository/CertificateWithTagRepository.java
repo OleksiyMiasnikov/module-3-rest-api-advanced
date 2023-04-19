@@ -2,6 +2,7 @@ package com.epam.esm.repository;
 
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.CertificateWithTag;
+import com.epam.esm.repository.row_mapper.CertificateWithTagRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +19,7 @@ public class CertificateWithTagRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String JOIN_SQL =
             "SELECT " +
+                "tag_tb.id as id," +
                 "name as certificate_name, " +
                 "description, " +
                 "price, " +
@@ -29,7 +31,8 @@ public class CertificateWithTagRepository {
                 "tag_name " +
             "FROM  certificate " +
             "JOIN (  " +
-                    "SELECT certificate_id, " +
+                    "SELECT certificate_with_tag.id, " +
+                            "certificate_id, " +
                             "name as tag_name, " +
                             "tag_id " +
                     "FROM certificate_with_tag " +
@@ -83,5 +86,15 @@ public class CertificateWithTagRepository {
         return jdbcTemplate.query("call find_by_part(?)",
                 new Object[]{pattern},
                 new CertificateWithTagRowMapper());
+    }
+
+    public Optional<CertificateWithTag> findById(int id){
+        log.info("Repository. Find certificate by id: " + id);
+        String sql = String.format(JOIN_SQL, "");
+        return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.id=?",
+                new Object[]{id},
+                new CertificateWithTagRowMapper())
+                .stream()
+                .findAny();
     }
 }
