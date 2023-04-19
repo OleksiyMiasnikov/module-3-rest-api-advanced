@@ -1,4 +1,4 @@
-package com.epam.esm.model.DTO;
+package com.epam.esm.model.DTO.certificate;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,14 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CertificateDTO {
-    private int id;
+public class CreateCertificateRequest {
     @NotEmpty(message = "Field 'name' can not be empty!")
     private String name;
     @NotEmpty(message = "Field 'description' can not be empty!")
@@ -26,21 +23,5 @@ public class CertificateDTO {
     @NotNull(message = "Field 'duration' can not be empty!")
     @Min(value = 1, message = "Field 'duration' should be more then 0!")
     private Integer duration;
-    private String createDate;
-    private String lastUpdateDate;
 
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CertificateDTO that = (CertificateDTO) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(duration, that.duration);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, price, duration);
-    }
 }

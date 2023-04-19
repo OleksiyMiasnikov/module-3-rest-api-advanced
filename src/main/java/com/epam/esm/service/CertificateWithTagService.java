@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.config.DateUtil;
-import com.epam.esm.model.DTO.CreateTagRequest;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;

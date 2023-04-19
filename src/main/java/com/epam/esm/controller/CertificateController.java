@@ -1,7 +1,10 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.certificate.CertificateDTO;
+import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.mapper.CertificateMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +19,11 @@ import java.util.List;
 public class CertificateController{
 
     private final CertificateService service;
+    private final CertificateMapper mapper;
     @PostMapping()
-    public Certificate create(@Valid @RequestBody Certificate certificate) {
-        log.info("Controller. Create certificate with name: " + certificate.getName());
-                return service.create(certificate);
+    public CertificateDTO create(@Valid @RequestBody CreateCertificateRequest request) {
+        log.info("Controller. Create certificate with name: " + request.getName());
+        return mapper.toDTO(service.create(request));
     }
 
     @GetMapping()

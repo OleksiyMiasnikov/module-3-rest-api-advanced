@@ -1,8 +1,9 @@
-package com.epam.esm.model.DTO;
+package com.epam.esm.model.DTO.tag;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter

@@ -3,6 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,8 +88,6 @@ class CertificateServiceTest {
                 .id(++id)
                 .name("certificate 2")
                 .price(25.5)
-                .createDate("")
-                .lastUpdateDate("")
                 .build();
         Certificate certificate3 = Certificate.builder()
                 .id(id)
@@ -95,13 +95,19 @@ class CertificateServiceTest {
                 .description("description of certificate 1")
                 .price(25.5)
                 .duration(5)
-                .createDate("")
-                .lastUpdateDate("")
                 .build();
         when(repo.findById(id)).thenReturn(Optional.of(certificate), Optional.of(certificate3));
         Certificate result = subject.update(id, certificate2);
-        verify(repo).update(id, certificate3);
-        assertThat(result).isEqualTo(certificate3);
+
+        verify(repo).update(any(Integer.class), any(Certificate.class));
+
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(result.getId()).isEqualTo(certificate3.getId());
+        softAssertions.assertThat(result.getName()).isEqualTo(certificate3.getName());
+        softAssertions.assertThat(result.getDescription()).isEqualTo(certificate3.getDescription());
+        softAssertions.assertThat(result.getPrice()).isEqualTo(certificate3.getPrice());
+        softAssertions.assertThat(result.getDuration()).isEqualTo(certificate3.getDuration());
+        softAssertions.assertAll();
     }
 
     @Test
@@ -126,9 +132,15 @@ class CertificateServiceTest {
 
         Certificate result = subject.update(id, certificate2);
 
-        verify(repo).update(id, certificate3);
+        verify(repo).update(any(Integer.class), any(Certificate.class));
 
-        assertThat(result).isEqualTo(certificate3);
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(result.getId()).isEqualTo(certificate3.getId());
+        softAssertions.assertThat(result.getName()).isEqualTo(certificate3.getName());
+        softAssertions.assertThat(result.getDescription()).isEqualTo(certificate3.getDescription());
+        softAssertions.assertThat(result.getPrice()).isEqualTo(certificate3.getPrice());
+        softAssertions.assertThat(result.getDuration()).isEqualTo(certificate3.getDuration());
+        softAssertions.assertAll();
     }
 
     @Test

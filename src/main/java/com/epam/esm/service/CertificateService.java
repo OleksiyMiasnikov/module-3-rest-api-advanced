@@ -1,9 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
+import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.config.DateUtil;
+import com.epam.esm.service.mapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,18 +23,18 @@ import java.util.List;
 public class CertificateService {
 
     private final CertificateRepository repo;
+    private final CertificateMapper mapper;
 
     /**
      * Creates a new tag.
      *
-     * @param certificate - create certificate
+     * @param request - creating certificate request
      * @return {@link Certificate} created certificate
      */
-    public Certificate create(Certificate certificate) {
-        log.info("Service. Create certificate with name: " + certificate.getName());
+    public Certificate create(CreateCertificateRequest request) {
+        log.info("Service. Create a new certificate.");
 
-        certificate.setCreateDate(DateUtil.getDate());
-        certificate.setLastUpdateDate(DateUtil.getDate());
+        Certificate certificate = mapper.toCertificate(request);
 
         int result = repo.create(certificate);
 

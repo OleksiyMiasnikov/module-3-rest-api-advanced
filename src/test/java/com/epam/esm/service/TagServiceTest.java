@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.DTO.CreateTagRequest;
+import com.epam.esm.model.DTO.tag.CreateTagRequest;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.TagMapper;

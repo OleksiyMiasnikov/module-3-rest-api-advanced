@@ -1,8 +1,8 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.controller.advice.ModuleExceptionHandler;
-import com.epam.esm.model.DTO.CreateTagRequest;
-import com.epam.esm.model.DTO.TagDTO;
+import com.epam.esm.model.DTO.tag.CreateTagRequest;
+import com.epam.esm.model.DTO.tag.TagDTO;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.mapper.TagMapper;

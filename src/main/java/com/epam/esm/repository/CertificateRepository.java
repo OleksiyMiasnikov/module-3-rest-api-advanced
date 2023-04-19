@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,8 +35,8 @@ public class CertificateRepository {
             ps.setString(2, certificate.getDescription());
             ps.setDouble(3, certificate.getPrice());
             ps.setInt(4, certificate.getDuration());
-            ps.setString(5, certificate.getCreateDate());
-            ps.setString(6, certificate.getLastUpdateDate());
+            ps.setTimestamp(5, Timestamp.from(certificate.getCreateDate()));
+            ps.setTimestamp(6, Timestamp.from(certificate.getLastUpdateDate()));
             return ps;
         }, keyHolder);
 
