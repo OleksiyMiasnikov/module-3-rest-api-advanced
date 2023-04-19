@@ -20,12 +20,12 @@ public class TagController{
 
     private final TagService service;
 
-    private final TagMapper tagMapper;
+    private final TagMapper mapper;
 
     @PostMapping()
     public TagDTO create(@Valid @RequestBody CreateTagRequest request) {
         log.info("Controller. Create tag with name: " + request.getName());
-        return tagMapper.toDTO(service.create(request));
+        return mapper.toDTO(service.create(request));
     }
 
     @GetMapping("/{id}")
@@ -35,9 +35,9 @@ public class TagController{
     }
 
     @GetMapping()
-    public List<Tag> findByName(@Valid @ModelAttribute ("name") String name) {
+    public List<TagDTO> findByName(@Valid @ModelAttribute ("name") String name) {
         log.info("Controller. Find tag by name: " + name);
-        return service.findByName(name);
+        return service.findByName(name).stream().map(mapper::toDTO).toList();
     }
 
     @DeleteMapping("/{id}")

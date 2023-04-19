@@ -11,7 +11,6 @@ import java.sql.SQLException;
 public class CertificateWithTagRowMapper implements RowMapper<CertificateWithTag> {
     @Override
     public CertificateWithTag mapRow(ResultSet rs, int rowNum) throws SQLException {
-        //log.info("Mapper loaded");
         return CertificateWithTag.builder()
                 .name(rs.getString("certificate_name"))
                 .description(rs.getString("description"))

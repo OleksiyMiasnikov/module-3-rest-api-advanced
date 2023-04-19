@@ -27,9 +27,9 @@ public class CertificateController{
     }
 
     @GetMapping()
-    public List<Certificate> findAll() {
+    public List<CertificateDTO> findAll() {
         log.info("Controller. Find all certificates");
-        return service.findAll();
+        return service.findAll().stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")

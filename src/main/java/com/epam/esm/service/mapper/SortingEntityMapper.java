@@ -13,6 +13,7 @@ public class SortingEntityMapper {
             field = "name";
         } else {
             field = switch (sortingEntity.getField()) {
+                case "tag" -> "tag_name";
                 case "createDate" -> "create_date";
                 case "lastUpdateDate" -> "last_update_date";
                 default -> sortingEntity.getField();
