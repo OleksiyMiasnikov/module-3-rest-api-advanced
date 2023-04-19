@@ -42,7 +42,6 @@ public class OrderMapper {
                 .withZone(ZoneId.systemDefault());
         return OrderDTO.builder()
                 .id(order.getId())
-                .userId(order.getUserId())
                 .userName(order.getUserName())
                 .CertificateWithTagId(order.getCertificateWithTagId())
                 .tagName(order.getTagName())

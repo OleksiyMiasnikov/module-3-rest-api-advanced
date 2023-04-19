@@ -13,7 +13,6 @@ import java.time.Instant;
 @Builder
 public class OrderDTO {
     private int id;
-    private int userId;
     private String userName;
     private int CertificateWithTagId;
     private String tagName;

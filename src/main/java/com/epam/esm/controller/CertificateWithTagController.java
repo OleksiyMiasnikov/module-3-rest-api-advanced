@@ -1,8 +1,11 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.model.DTO.SortingEntity;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
+import com.epam.esm.service.mapper.CertificateWithTagMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +20,13 @@ import java.util.List;
 public class CertificateWithTagController{
 
     private final CertificateWithTagService service;
+    private final CertificateWithTagMapper mapper;
 
 
     @PostMapping()
-    public CertificateWithTag create(@Valid @RequestBody CertificateWithTag certificateWithTag) {
-        log.info("Controller. Create certificate with tag and name: "
-                + certificateWithTag.getName());
-        return service.create(certificateWithTag);
+    public CertificateWithTagDTO create(@Valid @RequestBody CertificateWithTagRequest request) {
+        log.info("Controller. Create a new certificate with tag.");
+        return mapper.toDTO(service.create(request));
     }
 
     @GetMapping()
@@ -47,9 +50,9 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/search/{pattern}")
-    public List<CertificateWithTag> findByPartOfNameOrDescription(
+    public List<CertificateWithTagDTO> findByPartOfNameOrDescription(
             @PathVariable("pattern") String pattern) {
         log.info("Controller. Find certificate by part of name or description");
-        return service.findByPartOfNameOrDescription(pattern);
+        return service.findByPartOfNameOrDescription(pattern).stream().map(mapper::toDTO).toList();
     }
 }

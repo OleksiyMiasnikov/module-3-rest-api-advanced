@@ -67,7 +67,7 @@ public class OrderRepository {
 
     public Optional<Order> findById(int id){
         log.info("Repository. Find order by id: " + id);
-        return jdbcTemplate.query("SELECT * FROM user_order WHERE id=?",
+        return jdbcTemplate.query("SELECT * FROM (" + ORDER_SQL + ") tab WHERE tab.id=?",
                         new Object[]{id},
                         new OrderRowMapper())
                 .stream()

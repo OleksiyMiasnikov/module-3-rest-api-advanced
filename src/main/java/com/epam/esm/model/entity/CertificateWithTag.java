@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +19,6 @@ public class CertificateWithTag {
     private String description;
     private Double price;
     private Integer duration;
-    private String createDate;
-    private String lastUpdateDate;
+    private Instant createDate;
+    private Instant lastUpdateDate;
 }

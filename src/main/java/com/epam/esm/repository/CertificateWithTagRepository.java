@@ -19,8 +19,7 @@ public class CertificateWithTagRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String JOIN_SQL =
             "SELECT " +
-                "tag_tb.id as id," +
-                "name as certificate_name, " +
+                "tag_tb.id as id, name as certificate_name, " +
                 "description, " +
                 "price, " +
                 "duration, " +

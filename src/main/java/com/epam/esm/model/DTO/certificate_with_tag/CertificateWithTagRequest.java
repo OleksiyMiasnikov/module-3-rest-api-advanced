@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CertificateWithTagDTORequest {
+public class CertificateWithTagRequest {
     @NotEmpty(message = "Field 'tag' can not be empty!")
     private String tag;
     @NotEmpty(message = "Field 'name' can not be empty!")
@@ -26,6 +26,5 @@ public class CertificateWithTagDTORequest {
     @NotNull(message = "Field 'duration' can not be empty!")
     @Min(value = 1, message = "Field 'duration' should be more then 0!")
     private Integer duration;
-    private String createDate;
-    private String lastUpdateDate;
+
 }

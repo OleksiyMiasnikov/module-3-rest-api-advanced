@@ -12,12 +12,13 @@ public class CertificateWithTagRowMapper implements RowMapper<CertificateWithTag
     @Override
     public CertificateWithTag mapRow(ResultSet rs, int rowNum) throws SQLException {
         return CertificateWithTag.builder()
+                .id(rs.getInt("id"))
                 .name(rs.getString("certificate_name"))
                 .description(rs.getString("description"))
                 .price(rs.getDouble("price"))
                 .duration(rs.getInt("duration"))
-                .createDate(rs.getString("create_date"))
-                .lastUpdateDate(rs.getString("last_update_date"))
+                .createDate(rs.getTimestamp("create_date").toInstant())
+                .lastUpdateDate(rs.getTimestamp("last_update_date").toInstant())
                 .tag(rs.getString("tag_name"))
                 .build();
     }
