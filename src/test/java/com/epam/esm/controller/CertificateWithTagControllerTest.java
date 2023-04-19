@@ -2,8 +2,11 @@ package com.epam.esm.controller;
 
 import com.epam.esm.controller.advice.ModuleExceptionHandler;
 import com.epam.esm.model.DTO.SortingEntity;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
+import com.epam.esm.service.mapper.CertificateWithTagMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,6 +40,8 @@ class CertificateWithTagControllerTest {
 
     @Mock
     CertificateWithTagService service;
+    @Mock
+    CertificateWithTagMapper mapper;
 
     @InjectMocks
     CertificateWithTagController subject;
@@ -85,6 +90,13 @@ class CertificateWithTagControllerTest {
                     "price": 153.45,
                     "duration": 8
                 }""";
+        CertificateWithTagDTO expectedDTO = CertificateWithTagDTO.builder()
+                .tag("new tag")
+                .name("new certificate")
+                .description("description of new certificate")
+                .price(153.45)
+                .duration(8)
+                .build();
         CertificateWithTag expectedCertificate = CertificateWithTag.builder()
                 .tag("new tag")
                 .name("new certificate")
@@ -93,7 +105,8 @@ class CertificateWithTagControllerTest {
                 .duration(8)
                 .build();
 
-        when(service.create(any(CertificateWithTag.class))).thenReturn(expectedCertificate);
+        when(service.create(any(CertificateWithTagRequest.class))).thenReturn(expectedCertificate);
+        when(mapper.toDTO(any(CertificateWithTag.class))).thenReturn(expectedDTO);
 
         this.mockMvc.perform(post("/certificates_with_tags")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +119,7 @@ class CertificateWithTagControllerTest {
                 .andExpect(jsonPath("$.price").value(expectedCertificate.getPrice()))
                 .andExpect(jsonPath("$.duration").value(expectedCertificate.getDuration()));
 
-        verify(service).create(any(CertificateWithTag.class));
+        verify(service).create(any(CertificateWithTagRequest.class));
     }
 
     @Test
@@ -116,17 +129,17 @@ class CertificateWithTagControllerTest {
                 .direction("ASC")
                 .build();
         List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate2, certificate3));
-        String expected1 = "{\"tag\":\"tag_1\"," +
+        String expected1 = "\"tag\":\"tag_1\"," +
                 "\"name\":\"certificate 1\"," +
                 "\"description\":\"description of certificate 1\"," +
                 "\"price\":15.5," +
                 "\"duration\":5,";
-        String expected2 = "{\"tag\":\"tag_1\"," +
+        String expected2 = "\"tag\":\"tag_1\"," +
                 "\"name\":\"certificate 2\"," +
                 "\"description\":\"description of certificate 2\"," +
                 "\"price\":21.0," +
                 "\"duration\":10,";
-        String expected3 = "{\"tag\":\"tag_2\"," +
+        String expected3 = "\"tag\":\"tag_2\"," +
                 "\"name\":\"certificate 3\"," +
                 "\"description\":\"description of certificate 1\"," +
                 "\"price\":150.0," +
@@ -153,12 +166,12 @@ class CertificateWithTagControllerTest {
                 .direction("ASC")
                 .build();
         List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate2));
-        String expected1 = "{\"tag\":\"tag_1\"," +
+        String expected1 = "\"tag\":\"tag_1\"," +
                 "\"name\":\"certificate 1\"," +
                 "\"description\":\"description of certificate 1\"," +
                 "\"price\":15.5," +
                 "\"duration\":5,";
-        String expected2 = "{\"tag\":\"tag_1\"," +
+        String expected2 = "\"tag\":\"tag_1\"," +
                 "\"name\":\"certificate 2\"," +
                 "\"description\":\"description of certificate 2\"," +
                 "\"price\":21.0," +
@@ -180,18 +193,34 @@ class CertificateWithTagControllerTest {
     @Test
     void findByPartOfNameOrDescription() throws Exception {
         List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate3));
-        String expected1 = "{\"tag\":\"tag_1\"," +
+        String expected1 = "\"tag\":\"tag_1\"," +
                 "\"name\":\"certificate 1\"," +
                 "\"description\":\"description of certificate 1\"," +
                 "\"price\":15.5," +
                 "\"duration\":5,";
-        String expected2 = "{\"tag\":\"tag_2\"," +
+        String expected2 = "\"tag\":\"tag_2\"," +
                 "\"name\":\"certificate 3\"," +
                 "\"description\":\"description of certificate 1\"," +
                 "\"price\":150.0," +
                 "\"duration\":14,";
+        CertificateWithTagDTO certificateDto1 = CertificateWithTagDTO.builder()
+                .tag("tag_1")
+                .name("certificate 1")
+                .description("description of certificate 1")
+                .price(15.5)
+                .duration(5)
+                .build();
+        CertificateWithTagDTO certificateDto3 = CertificateWithTagDTO.builder()
+                .tag("tag_2")
+                .name("certificate 3")
+                .description("description of certificate 1")
+                .price(150d)
+                .duration(14)
+                .build();
 
         when(service.findByPartOfNameOrDescription("certificate 1")).thenReturn(list);
+        when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
+        when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
         this.mockMvc.perform(get("/certificates_with_tags//search/{pattern}",
                         "certificate 1"))

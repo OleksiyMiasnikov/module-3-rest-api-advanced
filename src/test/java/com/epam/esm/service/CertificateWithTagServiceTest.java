@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.model.DTO.SortingEntity;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
@@ -8,6 +9,7 @@ import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
+import com.epam.esm.service.mapper.CertificateWithTagMapper;
 import com.epam.esm.service.mapper.SortingEntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,18 +36,22 @@ class CertificateWithTagServiceTest {
     @Mock
     CertificateWithTagService subject;
     @Mock
-    CertificateMapper mapper;
+    CertificateWithTagMapper mapper;
+    @Mock
+    CertificateMapper certificateMapper;
     @Mock
     SortingEntityMapper sortingEntityMapper;
 
     CertificateWithTag certificateWithTag;
+    CertificateWithTagRequest request;
 
     @BeforeEach
     void setUp() {
         subject = new CertificateWithTagService(repo,
+                mapper,
                 tagRepo,
                 certificateRepo,
-                mapper,
+                certificateMapper,
                 sortingEntityMapper);
         certificateWithTag = CertificateWithTag.builder()
                 .tag("tag_name")
@@ -53,8 +59,13 @@ class CertificateWithTagServiceTest {
                 .description("description of certificate 1")
                 .price(100.50)
                 .duration(7)
-                .createDate("2023-04-13 14:56:06")
-                .lastUpdateDate("2023-04-13 14:56:06")
+                .build();
+        request = CertificateWithTagRequest.builder()
+                .tag("tag_name")
+                .name("certificate 1")
+                .description("description of certificate 1")
+                .price(100.50)
+                .duration(7)
                 .build();
     }
 
@@ -67,13 +78,14 @@ class CertificateWithTagServiceTest {
         int certificateId = 1;
         Certificate certificate = new Certificate();
 
-        when(mapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
+        when(certificateMapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
         when(tagRepo.findByName(certificateWithTag.getTag())).thenReturn(List.of(tag));
         when(certificateRepo.create(any())).thenReturn(certificateId);
+        when(mapper.toCertificateWithTag(any(CertificateWithTagRequest.class))).thenReturn(certificateWithTag);
         when(repo.findByTagIdAndCertificateId(tag.getId(), certificateId))
                 .thenReturn(Optional.of(certificateWithTag));
 
-        assertThat(subject.create(certificateWithTag)).isEqualTo(certificateWithTag);
+        assertThat(subject.create(request)).isEqualTo(certificateWithTag);
 
         verify(repo).create(tag.getId(), certificateId);
     }
@@ -84,14 +96,15 @@ class CertificateWithTagServiceTest {
         int tagId = 5;
         Certificate certificate = new Certificate();
 
-        when(mapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
+        when(mapper.toCertificateWithTag(any(CertificateWithTagRequest.class))).thenReturn(certificateWithTag);
+        when(certificateMapper.toCertificate(any(CertificateWithTag.class))).thenReturn(certificate);
         when(tagRepo.findByName(certificateWithTag.getTag())).thenReturn(List.of());
         when(certificateRepo.create(any())).thenReturn(certificateId);
         when(tagRepo.create(any(Tag.class))).thenReturn(tagId);
         when(repo.findByTagIdAndCertificateId(tagId, certificateId))
                 .thenReturn(Optional.of(certificateWithTag));
 
-        assertThat(subject.create(certificateWithTag)).isEqualTo(certificateWithTag);
+        assertThat(subject.create(request)).isEqualTo(certificateWithTag);
 
         verify(repo).create(tagId, certificateId);
     }
