@@ -1,13 +1,12 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import com.epam.esm.model.entity.Order;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.row_mapper.OrderRowMapper;
+import com.epam.esm.repository.row_mapper.UserWithMaxTotalCostRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -44,7 +43,7 @@ public class OrderRepository {
             WHERE cert_with_tag.cwt_id = user_with_order.certificate_with_tag_id
             """;
     private final String USER_WITH_MAX_TOTAL_COST_SQL = """
-             SELECT user_id
+             SELECT user_id, sum_of_costs
              FROM (
                 SELECT user_id, SUM(cost) AS sum_of_costs
                 FROM user_order GROUP BY user_id) sum_of_cost_selection
@@ -112,9 +111,10 @@ public class OrderRepository {
         return jdbcTemplate.query(sql, new Object[]{user}, new OrderRowMapper());
     }
 
-    public int findUserWithMaxTotalCost() {
+    public Optional<UserWithMaxTotalCost> findUserWithMaxTotalCost() {
         log.info("Repository. Find find user id with max total cost");
-        return jdbcTemplate.queryForObject(USER_WITH_MAX_TOTAL_COST_SQL, Integer.class);
+        return jdbcTemplate.query(USER_WITH_MAX_TOTAL_COST_SQL,
+                new UserWithMaxTotalCostRowMapper()).stream().findAny();
     }
 
     public int findMostlyUsedTag(int id) {

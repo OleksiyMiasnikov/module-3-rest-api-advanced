@@ -1,27 +1,20 @@
 package com.epam.esm.service;
 
-import com.epam.esm.config.DateUtil;
 import com.epam.esm.exception.ModuleException;
-import com.epam.esm.model.DTO.SortingEntity;
+import com.epam.esm.model.DTO.UserWithMaxTotalCostDTO;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
-import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Order;
 import com.epam.esm.model.entity.Tag;
-import com.epam.esm.repository.CertificateRepository;
-import com.epam.esm.repository.CertificateWithTagRepository;
+import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import com.epam.esm.repository.OrderRepository;
-import com.epam.esm.repository.TagRepository;
-import com.epam.esm.service.mapper.CertificateMapper;
 import com.epam.esm.service.mapper.OrderMapper;
-import com.epam.esm.service.mapper.SortingEntityMapper;
+import com.epam.esm.service.mapper.UserWithMaxTotalCostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,8 +27,8 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository repo;
-    private final OrderMapper mapper;
-    private final TagRepository tagRepository;
+    private final OrderMapper orderMapper;
+    private final UserWithMaxTotalCostMapper mapper;
 
     /**
      * Creates new record of order.
@@ -46,7 +39,7 @@ public class OrderService {
     @Transactional
     public Order create(CreateOrderRequest request) {
         log.info("Service. Create a new order");
-        Order order = mapper.toOrder(request);
+        Order order = orderMapper.toOrder(request);
 
         int id = repo.create(order);
 
@@ -68,14 +61,17 @@ public class OrderService {
         return repo.findByUser(user);
     }
 
-    public Tag findUserWithMaxTotalCost(){
-        log.info("Service. Find user id with max total cost");
-        int maxTotalCostUserId = repo.findUserWithMaxTotalCost();
-        int mostlyUsedTagId = repo.findMostlyUsedTag(maxTotalCostUserId);
-        return tagRepository.findById(mostlyUsedTagId)
+    public UserWithMaxTotalCost findUserWithMaxTotalCost(){
+        log.info("Service. Find the most widely used tag of a user with the highest cost of all orders.");
+
+        UserWithMaxTotalCost userWithMaxTotalCost = repo.findUserWithMaxTotalCost()
                 .orElseThrow(() -> new ModuleException("Couldn't find the most widely used tag of a user with the highest cost of all orders.",
                         "50011",
                         HttpStatus.INTERNAL_SERVER_ERROR));
+
+        userWithMaxTotalCost.setTag_id(repo.findMostlyUsedTag(userWithMaxTotalCost.getUser_id()));
+
+        return userWithMaxTotalCost;
     }
 
 }

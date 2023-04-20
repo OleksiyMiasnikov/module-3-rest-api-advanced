@@ -1,14 +1,15 @@
 package com.epam.esm.model.DTO;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Component
-public class EntityWithMaxTotalCost {
+public class UserWithMaxTotalCostDTO {
     private String user;
     private String tag;
     private Double totalCost;
-
-
 }

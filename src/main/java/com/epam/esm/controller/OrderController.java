@@ -1,11 +1,13 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.UserWithMaxTotalCostDTO;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
 import com.epam.esm.model.DTO.order.OrderDTO;
 import com.epam.esm.model.DTO.tag.TagDTO;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.mapper.OrderMapper;
 import com.epam.esm.service.mapper.TagMapper;
+import com.epam.esm.service.mapper.UserWithMaxTotalCostMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ public class OrderController {
 
     private final OrderService service;
     private final OrderMapper mapper;
-    private final TagMapper tagMapper;
+    private final UserWithMaxTotalCostMapper userWithMaxTotalCostMapper;
 
 
     @PostMapping()
@@ -43,9 +45,9 @@ public class OrderController {
     }
 
     @GetMapping("/max")
-    public TagDTO findUserWithMaxTotalCost() {
+    public UserWithMaxTotalCostDTO findUserWithMaxTotalCost() {
         log.info("Controller. Find find user id with max total cost");
-        return tagMapper.toDTO(service.findUserWithMaxTotalCost());
+        return userWithMaxTotalCostMapper.toDTO(service.findUserWithMaxTotalCost());
     }
 
 }
