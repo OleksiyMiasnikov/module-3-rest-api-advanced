@@ -6,17 +6,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class SortingEntityMapper {
     public SortingEntity toSortBy(SortingEntity sortingEntity) {
-        String field;
+        String sortBy;
         String direction;
 
-        if (sortingEntity.getField() == null) {
-            field = "name";
+        if (sortingEntity.getSort_by() == null) {
+            sortBy = "name";
         } else {
-            field = switch (sortingEntity.getField()) {
+            sortBy = switch (sortingEntity.getSort_by()) {
+                case "id" -> "tag_tb.id";
                 case "tag" -> "tag_name";
                 case "createDate" -> "create_date";
                 case "lastUpdateDate" -> "last_update_date";
-                default -> sortingEntity.getField();
+                default -> sortingEntity.getSort_by();
             };
         }
 
@@ -27,7 +28,7 @@ public class SortingEntityMapper {
         }
 
         return SortingEntity.builder()
-                .field(field)
+                .sort_by(sortBy)
                 .direction(direction)
                 .build();
     }

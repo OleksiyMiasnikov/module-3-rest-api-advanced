@@ -19,21 +19,11 @@ public class CertificateWithTagRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String JOIN_SQL =
             "SELECT " +
-                "tag_tb.id as id, name as certificate_name, " +
-                "description, " +
-                "price, " +
-                "duration, " +
-                "create_date, " +
-                "last_update_date, " +
-                "certificate_id, " +
-                "tag_id, " +
-                "tag_name " +
+                "tag_tb.id as id, name as certificate_name, description, price, duration, " +
+                "create_date, last_update_date, certificate_id, tag_id, tag_name " +
             "FROM  certificate " +
             "JOIN (  " +
-                    "SELECT certificate_with_tag.id, " +
-                            "certificate_id, " +
-                            "name as tag_name, " +
-                            "tag_id " +
+                    "SELECT certificate_with_tag.id, certificate_id, name as tag_name, tag_id " +
                     "FROM certificate_with_tag " +
                     "JOIN tag " +
                     "WHERE certificate_with_tag.tag_id = tag.id" +
@@ -50,7 +40,7 @@ public class CertificateWithTagRepository {
     public List<CertificateWithTag> findAll(SortingEntity sortingEntity) {
         log.info("Repository. Find all certificates with tags");
         String sql = String.format(JOIN_SQL, "ORDER by " +
-                sortingEntity.getField() +
+                sortingEntity.getSort_by() +
                 " " +
                 sortingEntity.getDirection());
         return jdbcTemplate.query(sql,
@@ -60,7 +50,7 @@ public class CertificateWithTagRepository {
     public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Repository. Find all certificates with tag: " + name);
         String sql = String.format(JOIN_SQL, "ORDER by " +
-                sortingEntity.getField() +
+                sortingEntity.getSort_by() +
                 " " +
                 sortingEntity.getDirection());
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",

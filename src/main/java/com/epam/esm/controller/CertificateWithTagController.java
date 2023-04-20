@@ -30,23 +30,23 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    public List<CertificateWithTag> findAll(
-            @Valid @ModelAttribute("sort_by")SortingEntity sortingEntity) {
+    public List<CertificateWithTagDTO> findAll(
+            @Valid @ModelAttribute("sortingEntity")SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tags");
-        return service.findAll(sortingEntity);
+        return service.findAll(sortingEntity).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/tag/{name}")
-    public List<CertificateWithTag> findByTagName(@PathVariable("name") String name,
+    public List<CertificateWithTagDTO> findByTagName(@PathVariable("name") String name,
             @Valid @ModelAttribute("sort_by") SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
-        return service.findByTagName(name, sortingEntity);
+        return service.findByTagName(name, sortingEntity).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")
-    public CertificateWithTag findById(@PathVariable("id") int id) {
+    public CertificateWithTagDTO findById(@PathVariable("id") int id) {
         log.info("Controller. Find certificate with tag by id: " + id);
-        return service.findById(id);
+        return mapper.toDTO(service.findById(id));
     }
 
     @GetMapping("/search/{pattern}")

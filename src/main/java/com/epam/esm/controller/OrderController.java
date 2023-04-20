@@ -2,8 +2,10 @@ package com.epam.esm.controller;
 
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
 import com.epam.esm.model.DTO.order.OrderDTO;
+import com.epam.esm.model.DTO.tag.TagDTO;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.mapper.OrderMapper;
+import com.epam.esm.service.mapper.TagMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ public class OrderController {
 
     private final OrderService service;
     private final OrderMapper mapper;
+    private final TagMapper tagMapper;
 
 
     @PostMapping()
@@ -37,6 +40,12 @@ public class OrderController {
     public List<OrderDTO> findByUser(@Valid @PathVariable("user") String user) {
         log.info("Controller. Find all orders by user: " + user);
         return service.findByUser(user).stream().map(mapper::toDTO).toList();
+    }
+
+    @GetMapping("/max")
+    public TagDTO findUserWithMaxTotalCost() {
+        log.info("Controller. Find find user id with max total cost");
+        return tagMapper.toDTO(service.findUserWithMaxTotalCost());
     }
 
 }

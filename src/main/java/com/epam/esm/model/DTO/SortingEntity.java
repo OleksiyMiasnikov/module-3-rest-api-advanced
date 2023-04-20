@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class SortingEntity {
-    private String field;
+    private String sort_by;
     @Pattern(regexp = "ASC|DESC", message = "parameter 'direction' should be 'ASC' or 'DESC'")
     private String direction;
 }
