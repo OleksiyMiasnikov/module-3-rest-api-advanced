@@ -1,6 +1,6 @@
 package com.epam.esm.service.mapper;
 
-import com.epam.esm.config.DateUtil;
+import com.epam.esm.util.DateUtil;
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;

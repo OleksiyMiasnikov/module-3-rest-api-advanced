@@ -40,7 +40,7 @@ public class CertificateWithTagRepository {
     public List<CertificateWithTag> findAll(SortingEntity sortingEntity) {
         log.info("Repository. Find all certificates with tags");
         String sql = String.format(JOIN_SQL, "ORDER by " +
-                sortingEntity.getSort_by() +
+                sortingEntity.getSortBy() +
                 " " +
                 sortingEntity.getDirection());
         return jdbcTemplate.query(sql,
@@ -50,7 +50,7 @@ public class CertificateWithTagRepository {
     public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Repository. Find all certificates with tag: " + name);
         String sql = String.format(JOIN_SQL, "ORDER by " +
-                sortingEntity.getSort_by() +
+                sortingEntity.getSortBy() +
                 " " +
                 sortingEntity.getDirection());
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",

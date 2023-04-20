@@ -2,12 +2,10 @@ package com.epam.esm.model.DTO.order;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
-import java.time.Instant;
-
-@Data
-@AllArgsConstructor
+@Getter
 @Builder
 public class CreateOrderRequest {
     @NotNull(message = "Field 'userId' can not be empty!")

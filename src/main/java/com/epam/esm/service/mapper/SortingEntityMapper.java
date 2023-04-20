@@ -9,15 +9,15 @@ public class SortingEntityMapper {
         String sortBy;
         String direction;
 
-        if (sortingEntity.getSort_by() == null) {
+        if (sortingEntity.getSortBy() == null) {
             sortBy = "name";
         } else {
-            sortBy = switch (sortingEntity.getSort_by()) {
+            sortBy = switch (sortingEntity.getSortBy()) {
                 case "id" -> "tag_tb.id";
                 case "tag" -> "tag_name";
                 case "createDate" -> "create_date";
                 case "lastUpdateDate" -> "last_update_date";
-                default -> sortingEntity.getSort_by();
+                default -> sortingEntity.getSortBy();
             };
         }
 
@@ -28,7 +28,7 @@ public class SortingEntityMapper {
         }
 
         return SortingEntity.builder()
-                .sort_by(sortBy)
+                .sortBy(sortBy)
                 .direction(direction)
                 .build();
     }

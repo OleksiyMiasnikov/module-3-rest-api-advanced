@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.config.DateUtil;
+import com.epam.esm.util.DateUtil;
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Component
 public class UserWithMaxTotalCost {
     private int user_id;
     private int tag_id;

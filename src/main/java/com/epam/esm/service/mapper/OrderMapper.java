@@ -1,6 +1,6 @@
 package com.epam.esm.service.mapper;
 
-import com.epam.esm.config.DateUtil;
+import com.epam.esm.util.DateUtil;
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
 import com.epam.esm.model.DTO.order.OrderDTO;

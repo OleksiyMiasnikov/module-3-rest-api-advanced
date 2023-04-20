@@ -111,7 +111,10 @@ class CertificateWithTagServiceTest {
 
     @Test
     void findAll() {
-        SortingEntity sortingEntity = new SortingEntity("name", "ASC");
+        SortingEntity sortingEntity = SortingEntity.builder()
+                .sortBy("name")
+                .direction("ASC")
+                .build();
 
         when(sortingEntityMapper.toSortBy(any(SortingEntity.class)))
                 .thenReturn(sortingEntity);
@@ -125,7 +128,10 @@ class CertificateWithTagServiceTest {
 
     @Test
     void findByTagName() {
-        SortingEntity sortingEntity = new SortingEntity("name", "ASC");
+        SortingEntity sortingEntity = SortingEntity.builder()
+                .sortBy("name")
+                .direction("ASC")
+                .build();
 
         when(sortingEntityMapper.toSortBy(any(SortingEntity.class)))
                 .thenReturn(sortingEntity);

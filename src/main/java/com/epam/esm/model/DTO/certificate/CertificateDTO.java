@@ -1,13 +1,9 @@
 package com.epam.esm.model.DTO.certificate;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
 public class CertificateDTO {
     private int id;

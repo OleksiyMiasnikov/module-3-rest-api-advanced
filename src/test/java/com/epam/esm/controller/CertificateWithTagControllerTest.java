@@ -10,8 +10,10 @@ import com.epam.esm.service.mapper.CertificateWithTagMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,11 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class CertificateWithTagControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @Mock
@@ -126,7 +126,7 @@ class CertificateWithTagControllerTest {
     @Disabled
     void findAll() throws Exception {
         SortingEntity sortingEntity = SortingEntity.builder()
-                .sort_by("name")
+                .sortBy("name")
                 .direction("ASC")
                 .build();
         List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate2, certificate3));
@@ -149,7 +149,7 @@ class CertificateWithTagControllerTest {
         when(service.findAll(sortingEntity)).thenReturn(list);
 
         this.mockMvc.perform(get("/certificates_with_tags")
-                        .param("field", sortingEntity.getSort_by())
+                        .param("field", sortingEntity.getSortBy())
                         .param("direction", sortingEntity.getDirection()))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -164,7 +164,7 @@ class CertificateWithTagControllerTest {
     @Disabled
     void findByTagName() throws Exception {
         SortingEntity sortingEntity = SortingEntity.builder()
-                .sort_by("name")
+                .sortBy("name")
                 .direction("ASC")
                 .build();
         List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate2));
@@ -182,7 +182,7 @@ class CertificateWithTagControllerTest {
         when(service.findByTagName("tag_1", sortingEntity)).thenReturn(list);
 
         this.mockMvc.perform(get("/certificates_with_tags/tag/{name}", "tag_1")
-                        .param("field", sortingEntity.getSort_by())
+                        .param("field", sortingEntity.getSortBy())
                         .param("direction", sortingEntity.getDirection()))
                 .andDo(print())
                 .andExpect(status().isOk())

@@ -56,13 +56,13 @@ public class OrderRepository {
                     tag_id,
                     COUNT(*) AS count_of_tags
                     FROM (
-                        SELECT certificate_with_tag_id AS id 
+                        SELECT certificate_with_tag_id AS id
                         FROM user_order 
                         WHERE user_id = ?) cwt_id_selection
                     JOIN certificate_with_tag
                     WHERE certificate_with_tag.id = cwt_id_selection.id
                     GROUP BY tag_id
-                    LIMIT 1) tags_selection
+                    ORDER BY count_of_tags DESC LIMIT 1) tags_selection
             """;
 
     public int create(Order order) {

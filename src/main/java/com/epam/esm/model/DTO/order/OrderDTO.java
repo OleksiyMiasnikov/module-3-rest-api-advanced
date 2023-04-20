@@ -1,15 +1,9 @@
 package com.epam.esm.model.DTO.order;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-import java.time.Instant;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
 public class OrderDTO {
     private int id;

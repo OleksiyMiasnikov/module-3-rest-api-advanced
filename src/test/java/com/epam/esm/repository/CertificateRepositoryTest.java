@@ -1,6 +1,6 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.config.DateUtil;
+import com.epam.esm.util.DateUtil;
 import com.epam.esm.model.entity.Certificate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

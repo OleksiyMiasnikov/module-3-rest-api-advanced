@@ -4,7 +4,7 @@ import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
-import com.epam.esm.config.DateUtil;
+import com.epam.esm.util.DateUtil;
 import com.epam.esm.service.mapper.CertificateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

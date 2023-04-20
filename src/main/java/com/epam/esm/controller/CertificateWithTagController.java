@@ -6,6 +6,7 @@ import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
 import com.epam.esm.service.mapper.CertificateWithTagMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class CertificateWithTagController{
 
     @GetMapping()
     public List<CertificateWithTagDTO> findAll(
-            @Valid @ModelAttribute("sortingEntity")SortingEntity sortingEntity) {
+            @Valid @ModelAttribute() SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tags");
         return service.findAll(sortingEntity).stream().map(mapper::toDTO).toList();
     }

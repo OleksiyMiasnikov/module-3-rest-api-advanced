@@ -43,7 +43,7 @@ class TagServiceTest {
         when(repo.findById(id)).thenReturn(Optional.of(tag));
         when(mapper.toTag(any(CreateTagRequest.class))).thenReturn(Tag.builder().name(name).build());
 
-        Tag result = subject.create(new CreateTagRequest(name));
+        Tag result = subject.create(CreateTagRequest.builder().name(name).build());
         assertThat(result).isEqualTo(tag);
     }
 
