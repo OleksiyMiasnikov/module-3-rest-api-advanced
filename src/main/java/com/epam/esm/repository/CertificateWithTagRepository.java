@@ -58,6 +58,27 @@ public class CertificateWithTagRepository {
                         new CertificateWithTagRowMapper());
     }
 
+    public List<CertificateWithTag> findAllWithPage(int page, int size) {
+        log.info("Repository. Find all certificates with tags");
+        String sql = String.format(JOIN_SQL, "LIMIT " +
+                size +
+                " OFFSET " +
+                (page -1) * size);
+        return jdbcTemplate.query(sql,
+                new CertificateWithTagRowMapper());
+    }
+
+    public List<CertificateWithTag> findByTagNameWithPage(String name, int page, int size) {
+        log.info("Repository. Find all certificates with tag: " + name);
+        String sql = String.format(JOIN_SQL, "LIMIT " +
+                size +
+                " OFFSET " +
+                (page -1) * size);
+        return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",
+                new Object[]{name},
+                new CertificateWithTagRowMapper());
+    }
+
     public Optional<CertificateWithTag> findByTagIdAndCertificateId(Integer tagId, Integer certificateId) {
         log.info("Repository. Find certificate by tagId and certificateId");
         String sql = String.format(JOIN_SQL, "");
@@ -85,5 +106,11 @@ public class CertificateWithTagRepository {
                 new CertificateWithTagRowMapper())
                 .stream()
                 .findAny();
+    }
+
+    public int sizeOfCertificateWithTag() {
+        log.info("Repository. Determine size of CertificateWithTag");
+        String sql = "SELECT count(*) FROM (" + String.format(JOIN_SQL, ") selected_tab");
+        return jdbcTemplate.queryForObject(sql,  Integer.class);
     }
 }

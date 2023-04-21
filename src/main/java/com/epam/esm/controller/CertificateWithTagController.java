@@ -31,17 +31,18 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    public List<CertificateWithTagDTO> findAll(
-            @Valid @ModelAttribute() SortingEntity sortingEntity) {
+    public List<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
+                                               @RequestParam("size") int size) {
         log.info("Controller. Find all certificates with tags");
-        return service.findAll(sortingEntity).stream().map(mapper::toDTO).toList();
+        return service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/tag/{name}")
     public List<CertificateWithTagDTO> findByTagName(@PathVariable("name") String name,
-            @Valid @ModelAttribute("sort_by") SortingEntity sortingEntity) {
+                                                     @RequestParam("page") int page,
+                                                     @RequestParam("size") int size) {
         log.info("Controller. Find all certificates with tag: " + name);
-        return service.findByTagName(name, sortingEntity).stream().map(mapper::toDTO).toList();
+        return service.findByTagNameWithPage(name, page, size).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")

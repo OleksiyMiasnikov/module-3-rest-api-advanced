@@ -74,6 +74,24 @@ public class CertificateWithTagService{
     }
 
     /**
+     * Finds all certificates with tags by page.
+     * Result will be selected by page and size.
+     *
+     * @param page number of page
+     * @param size number of rows on the page
+     * @return List of {@link CertificateWithTag} List of all certificates with tags from database
+     */
+    public List<CertificateWithTag> findAllWithPage(int page, int size) {
+        log.info("Controller. Find all certificates with tags");
+        if (repo.sizeOfCertificateWithTag() <= (page - 1) * size) {
+            throw new ModuleException("There are no fields for page " + page + " with size " + size,
+                    "40491",
+                    HttpStatus.BAD_REQUEST);
+        }
+        return repo.findAllWithPage(page, size);
+    }
+
+    /**
      * Finds all certificates with tags.
      * Result will be sorted by name and created date
      *
@@ -96,6 +114,19 @@ public class CertificateWithTagService{
     public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
         return repo.findByTagName(name, sortingEntityMapper.toSortBy(sortingEntity));
+    }
+
+    /**
+     * Finds all certificates by tag name.
+     * Result will be sorted by name and created date
+     *
+     * @param name name of tag
+     * @param sortingEntity sorting criterion
+     * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
+     */
+    public List<CertificateWithTag> findByTagNameWithPage(String name, int page, int size) {
+        log.info("Controller. Find all certificates with tag: " + name);
+        return repo.findByTagNameWithPage(name, page, size);
     }
 
     /**
