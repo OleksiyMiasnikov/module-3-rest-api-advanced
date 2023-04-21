@@ -1,7 +1,7 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import com.epam.esm.repository.row_mapper.OrderRowMapper;
 import com.epam.esm.repository.row_mapper.UserWithMaxTotalCostRowMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class OrderRepository {
 
     private final String ORDER_SQL = """
             SELECT
-            	id, user_id, user_name, certificate_with_tag_id, tag_name, 
+            	id, user_id, user_name, certificate_with_tag_id, tag_name,
             	certificate_name, description, duration, cost, create_date
             FROM
             	(SELECT tag_tb.id as cwt_id, tag_name, name as certificate_name, description, duration
@@ -57,7 +57,7 @@ public class OrderRepository {
                     COUNT(*) AS count_of_tags
                     FROM (
                         SELECT certificate_with_tag_id AS id
-                        FROM user_order 
+                        FROM user_order
                         WHERE user_id = ?) cwt_id_selection
                     JOIN certificate_with_tag
                     WHERE certificate_with_tag.id = cwt_id_selection.id
@@ -92,8 +92,8 @@ public class OrderRepository {
     public Optional<Order> findById(int id){
         log.info("Repository. Find order by id: " + id);
         return jdbcTemplate.query("SELECT * FROM (" + ORDER_SQL + ") tab WHERE tab.id=?",
-                        new Object[]{id},
-                        new OrderRowMapper())
+                        new OrderRowMapper(),
+                        id)
                 .stream()
                 .findAny();
     }
@@ -108,7 +108,7 @@ public class OrderRepository {
     public List<Order> findByUser(String user) {
         log.info("Repository. Find all orders by user: " + user);
         String sql = "SELECT * FROM (" + ORDER_SQL + ") tab WHERE tab.user_name = ?";
-        return jdbcTemplate.query(sql, new Object[]{user}, new OrderRowMapper());
+        return jdbcTemplate.query(sql, new OrderRowMapper(), user);
     }
 
     public Optional<UserWithMaxTotalCost> findUserWithMaxTotalCost() {
@@ -117,8 +117,8 @@ public class OrderRepository {
                 new UserWithMaxTotalCostRowMapper()).stream().findAny();
     }
 
-    public int findMostlyUsedTag(int id) {
+    public Integer findMostlyUsedTag(int id) {
         log.info("Repository. Find find the mostly used tag of user with id: " + id);
-        return jdbcTemplate.queryForObject(MOST_WIDELY_USED_TAG, new Object[]{id}, Integer.class);
+        return jdbcTemplate.queryForObject(MOST_WIDELY_USED_TAG, Integer.class, id);
     }
 }

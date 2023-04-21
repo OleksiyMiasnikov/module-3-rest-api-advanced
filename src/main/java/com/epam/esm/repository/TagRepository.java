@@ -45,15 +45,17 @@ public class TagRepository {
     public Optional<Tag> findById(int id){
         log.info("Repository. Find tag by id: " + id);
         return jdbcTemplate.query("SELECT * FROM tag WHERE id=?",
-                new Object[]{id},
-                new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
+                new BeanPropertyRowMapper<>(Tag.class),
+                id)
+                .stream()
+                .findAny();
     }
 
     public List<Tag> findByName(String name){
         log.info("Repository. Find tag by name: " + name);
         return jdbcTemplate.query("SELECT * FROM tag WHERE name=?",
-                new Object[]{name},
-                new BeanPropertyRowMapper<>(Tag.class));
+                new BeanPropertyRowMapper<>(Tag.class),
+                name);
     }
 
     public boolean delete(int id) {

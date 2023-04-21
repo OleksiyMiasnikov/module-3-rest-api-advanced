@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.util.DateUtil;
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
@@ -13,6 +12,7 @@ import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
 import com.epam.esm.service.mapper.CertificateWithTagMapper;
 import com.epam.esm.service.mapper.SortingEntityMapper;
+import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *  A service to work with {@link CertificateWithTag}.
@@ -124,8 +123,6 @@ public class CertificateWithTagService{
 
     public List<CertificateWithTag> findByTagName(SortingEntity sortingEntity, List<String> list) {
         log.info("Controller. Find all certificates with tag");
-        //String pattern = list.stream().collect(Collectors.joining(" OR "));
-        //String[] names = list.toArray(new String[0]);
         return repo.findByTagName(list, sortingEntityMapper.toSortBy(sortingEntity));
     }
 

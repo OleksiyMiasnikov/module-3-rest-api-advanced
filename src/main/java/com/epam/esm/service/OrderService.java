@@ -1,14 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
-import com.epam.esm.model.DTO.UserWithMaxTotalCostDTO;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
 import com.epam.esm.model.entity.Order;
-import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.service.mapper.OrderMapper;
-import com.epam.esm.service.mapper.UserWithMaxTotalCostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +25,6 @@ public class OrderService {
 
     private final OrderRepository repo;
     private final OrderMapper orderMapper;
-    private final UserWithMaxTotalCostMapper mapper;
 
     /**
      * Creates new record of order.

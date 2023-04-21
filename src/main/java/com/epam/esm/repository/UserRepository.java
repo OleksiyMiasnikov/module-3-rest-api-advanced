@@ -25,8 +25,8 @@ public class UserRepository {
     public Optional<User> findById(int id){
         log.info("Repository. Find user by id: " + id);
         return jdbcTemplate.query("SELECT * FROM user WHERE id=?",
-                        new Object[]{id},
-                        new BeanPropertyRowMapper<>(User.class))
+                        new BeanPropertyRowMapper<>(User.class),
+                        id)
                 .stream()
                 .findAny();
     }

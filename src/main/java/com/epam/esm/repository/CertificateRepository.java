@@ -52,8 +52,8 @@ public class CertificateRepository {
     public Optional<Certificate> findById(int id){
         log.info("Repository. Find certificate by id: " + id);
         return jdbcTemplate.query("SELECT * FROM certificate WHERE id=?",
-                        new Object[]{id},
-                        new CertificateRowMapper())
+                        new CertificateRowMapper(),
+                        id)
                 .stream()
                 .findAny();
     }

@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -55,10 +54,9 @@ public class CertificateWithTagRepository {
                 sortingEntity.getSortBy() +
                 " " +
                 sortingEntity.getDirection());
-
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",
-                        new Object[]{name},
-                        new CertificateWithTagRowMapper());
+                new CertificateWithTagRowMapper(),
+                name);
     }
 
     public List<CertificateWithTag> findByTagName(List<String> list, SortingEntity sortingEntity) {
@@ -73,8 +71,8 @@ public class CertificateWithTagRepository {
                         ") all_tb WHERE all_tb.tag_name IN (" +
                         inSql +
                         ")",
-                list.toArray(),
-                new CertificateWithTagRowMapper());
+                new CertificateWithTagRowMapper(),
+                list.toArray());
     }
     public List<CertificateWithTag> findAllWithPage(int page, int size) {
         log.info("Repository. Find all certificates with tags");
@@ -93,8 +91,8 @@ public class CertificateWithTagRepository {
                 " OFFSET " +
                 (page -1) * size);
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",
-                new Object[]{name},
-                new CertificateWithTagRowMapper());
+                new CertificateWithTagRowMapper(),
+                name);
     }
 
     public Optional<CertificateWithTag> findByTagIdAndCertificateId(Integer tagId, Integer certificateId) {
@@ -103,8 +101,8 @@ public class CertificateWithTagRepository {
         return jdbcTemplate.query("SELECT * FROM (" +
                         sql +
                         ") all_tb WHERE all_tb.tag_id=? AND all_tb.certificate_id=?",
-                new Object[]{tagId, certificateId},
-                new CertificateWithTagRowMapper())
+                        new CertificateWithTagRowMapper(),
+                        new Object[]{tagId, certificateId})
                 .stream()
                 .findAny();
     }
@@ -112,21 +110,21 @@ public class CertificateWithTagRepository {
     public List<CertificateWithTag> findByPartOfNameOrDescription(String pattern) {
         log.info("Repository. Find certificate by part of name or description");
         return jdbcTemplate.query("call find_by_part(?)",
-                new Object[]{pattern},
-                new CertificateWithTagRowMapper());
+                new CertificateWithTagRowMapper(),
+                pattern);
     }
 
     public Optional<CertificateWithTag> findById(int id){
         log.info("Repository. Find certificate by id: " + id);
         String sql = String.format(JOIN_SQL, "");
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.id=?",
-                new Object[]{id},
-                new CertificateWithTagRowMapper())
+                        new CertificateWithTagRowMapper(),
+                        id)
                 .stream()
                 .findAny();
     }
 
-    public int sizeOfCertificateWithTag() {
+    public Integer sizeOfCertificateWithTag() {
         log.info("Repository. Determine size of CertificateWithTag");
         String sql = "SELECT count(*) FROM (" + String.format(JOIN_SQL, ") selected_tab");
         return jdbcTemplate.queryForObject(sql,  Integer.class);

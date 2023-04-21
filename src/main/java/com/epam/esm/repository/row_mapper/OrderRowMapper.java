@@ -1,6 +1,5 @@
 package com.epam.esm.repository.row_mapper;
 
-import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
