@@ -47,10 +47,10 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/tag/{name}")
-    public List<CertificateWithTagDTO> findByTagName(@PathVariable("name") String name,
-                                                     @ModelAttribute("sort_by") SortingEntity sortingEntity) {
-        log.info("Controller. Find all certificates with tag: " + name);
-        return service.findByTagName(name, sortingEntity).stream().map(mapper::toDTO).toList();
+    public List<CertificateWithTagDTO> findByTagName(@ModelAttribute("sort_by") SortingEntity sortingEntity,
+                                                     @PathVariable("name") List<String> list) {
+        log.info("Controller. Find all certificates with tag");
+        return service.findByTagName(sortingEntity, list).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")

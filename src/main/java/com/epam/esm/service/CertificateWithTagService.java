@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  A service to work with {@link CertificateWithTag}.
@@ -119,6 +120,13 @@ public class CertificateWithTagService{
     public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
         return repo.findByTagName(name, sortingEntityMapper.toSortBy(sortingEntity));
+    }
+
+    public List<CertificateWithTag> findByTagName(SortingEntity sortingEntity, List<String> list) {
+        log.info("Controller. Find all certificates with tag");
+        //String pattern = list.stream().collect(Collectors.joining(" OR "));
+        //String[] names = list.toArray(new String[0]);
+        return repo.findByTagName(list, sortingEntityMapper.toSortBy(sortingEntity));
     }
 
     /**

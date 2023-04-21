@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,11 +55,27 @@ public class CertificateWithTagRepository {
                 sortingEntity.getSortBy() +
                 " " +
                 sortingEntity.getDirection());
+
         return jdbcTemplate.query("SELECT * FROM (" + sql + ") all_tb WHERE all_tb.tag_name=?",
                         new Object[]{name},
                         new CertificateWithTagRowMapper());
     }
 
+    public List<CertificateWithTag> findByTagName(List<String> list, SortingEntity sortingEntity) {
+        log.info("Repository. Find all certificates with tag");
+        String inSql = String.join(",", Collections.nCopies(list.size(), "?"));
+        String sql = String.format(JOIN_SQL, "ORDER by " +
+                sortingEntity.getSortBy() +
+                " " +
+                sortingEntity.getDirection());
+        return jdbcTemplate.query("SELECT * FROM (" +
+                        sql +
+                        ") all_tb WHERE all_tb.tag_name IN (" +
+                        inSql +
+                        ")",
+                list.toArray(),
+                new CertificateWithTagRowMapper());
+    }
     public List<CertificateWithTag> findAllWithPage(int page, int size) {
         log.info("Repository. Find all certificates with tags");
         String sql = String.format(JOIN_SQL, "LIMIT " +
