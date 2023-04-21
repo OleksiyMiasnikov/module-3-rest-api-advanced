@@ -3,16 +3,17 @@ package com.epam.esm.controller;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
-import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
 import com.epam.esm.service.mapper.CertificateWithTagMapper;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
@@ -27,22 +28,29 @@ public class CertificateWithTagController{
     @PostMapping()
     public CertificateWithTagDTO create(@Valid @RequestBody CertificateWithTagRequest request) {
         log.info("Controller. Create a new certificate with tag.");
-        return mapper.toDTO(service.create(request));
+        CertificateWithTagDTO createdDTO = mapper.toDTO(service.create(request));
+        createdDTO.add(
+                linkTo(methodOn(CertificateWithTagController.class)
+                        .findById(createdDTO.getId()))
+                        .withSelfRel());
+        return createdDTO;
     }
 
     @GetMapping()
     public List<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
                                                @RequestParam("size") int size) {
         log.info("Controller. Find all certificates with tags");
-        return service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
+        List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
+        listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
+                .findById(l.getId())).withSelfRel()));
+        return listDTO;
     }
 
     @GetMapping("/tag/{name}")
     public List<CertificateWithTagDTO> findByTagName(@PathVariable("name") String name,
-                                                     @RequestParam("page") int page,
-                                                     @RequestParam("size") int size) {
+                                                     @ModelAttribute("sort_by") SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
-        return service.findByTagNameWithPage(name, page, size).stream().map(mapper::toDTO).toList();
+        return service.findByTagName(name, sortingEntity).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")

@@ -1,10 +1,11 @@
 package com.epam.esm.model.DTO.certificate_with_tag;
 
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Builder
-public class CertificateWithTagDTO {
+public class CertificateWithTagDTO extends RepresentationModel<CertificateWithTagDTO> {
     private int id;
     private String tag;
     private String name;

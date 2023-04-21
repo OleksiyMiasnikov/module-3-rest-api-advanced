@@ -88,6 +88,11 @@ public class CertificateWithTagService{
                     "40491",
                     HttpStatus.BAD_REQUEST);
         }
+        if (page <= 0 || size <= 0) {
+            throw new ModuleException("Parameters page and size must be more then 0",
+                    "40492",
+                    HttpStatus.BAD_REQUEST);
+        }
         return repo.findAllWithPage(page, size);
     }
 
@@ -121,7 +126,8 @@ public class CertificateWithTagService{
      * Result will be sorted by name and created date
      *
      * @param name name of tag
-     * @param sortingEntity sorting criterion
+     * @param page number of page
+     * @param size number of rows on the page
      * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
      */
     public List<CertificateWithTag> findByTagNameWithPage(String name, int page, int size) {
