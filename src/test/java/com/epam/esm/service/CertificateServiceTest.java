@@ -70,8 +70,8 @@ class CertificateServiceTest {
                 .price(25.5)
                 .duration(15)
                 .build();
-        when(repo.findAll()).thenReturn(List.of(certificate, certificate2));
-        List<Certificate> result = subject.findAll();
+        when(repo.findAll(1,100)).thenReturn(List.of(certificate, certificate2));
+        List<Certificate> result = subject.findAll(1,100);
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).isEqualTo(List.of(certificate, certificate2));
     }

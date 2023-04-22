@@ -76,12 +76,11 @@ public class CertificateWithTagRepository {
     }
     public List<CertificateWithTag> findAllWithPage(int page, int size) {
         log.info("Repository. Find all certificates with tags");
-        String sql = String.format(JOIN_SQL, "LIMIT " +
-                size +
-                " OFFSET " +
-                (page -1) * size);
+        String sql = String.format(JOIN_SQL, "LIMIT ? OFFSET ?");
         return jdbcTemplate.query(sql,
-                new CertificateWithTagRowMapper());
+                new CertificateWithTagRowMapper(),
+                size,
+                (page -1) * size);
     }
 
     public List<CertificateWithTag> findByTagNameWithPage(String name, int page, int size) {

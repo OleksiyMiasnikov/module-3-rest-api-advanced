@@ -92,7 +92,7 @@ class CertificateRepositoryTest {
     @Test
     void findAll() {
         List<Certificate> expected = new LinkedList<>(List.of(certificate_1, certificate_2, certificate_3));
-        List<Certificate> actual = repo.findAll();
+        List<Certificate> actual = repo.findAll(1,1);
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).isEqualTo(expected);
     }

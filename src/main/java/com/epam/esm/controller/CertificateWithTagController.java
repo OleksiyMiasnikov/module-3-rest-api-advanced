@@ -38,15 +38,13 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    public PageDTO findAll(@RequestParam("page") int page,
+    public PageDTO<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
         log.info("Controller. Find all certificates with tags");
         List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
         listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
                 .findById(l.getId())).withSelfRel()));
-        PageDTO pageDTO = PageDTO.builder()
-                .list(listDTO)
-                .build();
+        PageDTO<CertificateWithTagDTO> pageDTO = new PageDTO<>(listDTO);
         pageDTO.add(linkTo(methodOn(CertificateWithTagController.class).findAll(page - 1, size)).withSelfRel());
         pageDTO.add(linkTo(methodOn(CertificateWithTagController.class).findAll(page + 1, size)).withSelfRel());
         return pageDTO;

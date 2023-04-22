@@ -43,10 +43,12 @@ public class CertificateRepository {
         return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
-    public List<Certificate> findAll() {
+    public List<Certificate> findAll(int page, int size) {
         log.info("Repository. Find all certificates");
-        return jdbcTemplate.query("SELECT * FROM certificate",
-                new CertificateRowMapper());
+        return jdbcTemplate.query("SELECT * FROM certificate LIMIT ? OFFSET ?",
+                new CertificateRowMapper(),
+                size,
+                (page - 1) * size);
     }
 
     public Optional<Certificate> findById(int id){
@@ -80,5 +82,11 @@ public class CertificateRepository {
         int result = jdbcTemplate.update("DELETE FROM certificate WHERE id=?", id);
         log.info("result of deleting " + result);
         return result == 1;
+    }
+
+    public Integer sizeOfCertificate() {
+        log.info("Repository. Determine size of Certificate");
+        String sql = "SELECT count(*) FROM certificate";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 }

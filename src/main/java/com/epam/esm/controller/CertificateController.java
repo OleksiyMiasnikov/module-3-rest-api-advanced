@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.PageDTO;
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
@@ -11,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
@@ -27,9 +31,14 @@ public class CertificateController{
     }
 
     @GetMapping()
-    public List<CertificateDTO> findAll() {
+    public PageDTO<CertificateDTO> findAll(@RequestParam("page") int page,
+                                           @RequestParam("size") int size) {
         log.info("Controller. Find all certificates");
-        return service.findAll().stream().map(mapper::toDTO).toList();
+        List<CertificateDTO> list = service.findAll(page, size).stream().map(mapper::toDTO).toList();
+        PageDTO<CertificateDTO> pageDTO = new PageDTO<>(list);
+        pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page - 1, size)).withSelfRel());
+        pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page + 1, size)).withSelfRel());
+        return pageDTO;
     }
 
     @GetMapping("/{id}")

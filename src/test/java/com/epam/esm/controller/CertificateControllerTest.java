@@ -116,7 +116,7 @@ class CertificateControllerTest {
                 .price(150d)
                 .duration(14)
                 .build();
-        when(service.findAll()).thenReturn(list);
+        when(service.findAll(1,100)).thenReturn(list);
         when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
         when(mapper.toDTO(certificate2)).thenReturn(certificateDto2);
         when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
@@ -127,7 +127,7 @@ class CertificateControllerTest {
                 .andExpect(content().string(containsString(expected1)))
                 .andExpect(content().string(containsString(expected2)))
                 .andExpect(content().string(containsString(expected3)));
-        verify(service).findAll();
+        verify(service).findAll(1,100);
     }
 
     @Test

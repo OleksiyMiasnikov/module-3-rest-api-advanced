@@ -46,10 +46,21 @@ public class CertificateService {
      *
      * @return List of {@link Certificate} List of all certificates from database
      */
-    public List<Certificate> findAll() {
+    public List<Certificate> findAll(int page, int size) {
         log.info("Service. Find all certificates");
 
-        return repo.findAll();
+        if (repo.sizeOfCertificate() <= (page - 1) * size) {
+            throw new ModuleException("There are no fields for page " + page + " with size " + size,
+                    "40491",
+                    HttpStatus.BAD_REQUEST);
+        }
+        if (page <= 0 || size <= 0) {
+            throw new ModuleException("Parameters page and size must be more then 0",
+                    "40492",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        return repo.findAll(page, size);
     }
 
     /**
