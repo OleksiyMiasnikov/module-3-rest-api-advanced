@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.PageDTO;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
@@ -37,14 +38,29 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    public List<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
-                                               @RequestParam("size") int size) {
+    public PageDTO findAll(@RequestParam("page") int page,
+                                                       @RequestParam("size") int size) {
         log.info("Controller. Find all certificates with tags");
         List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
         listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
                 .findById(l.getId())).withSelfRel()));
-        return listDTO;
+        PageDTO pageDTO = PageDTO.builder()
+                .list(listDTO)
+                .build();
+        pageDTO.add(linkTo(methodOn(CertificateWithTagController.class).findAll(page - 1, size)).withSelfRel());
+        pageDTO.add(linkTo(methodOn(CertificateWithTagController.class).findAll(page + 1, size)).withSelfRel());
+        return pageDTO;
     }
+
+//    @GetMapping()
+//    public List<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
+//                                               @RequestParam("size") int size) {
+//        log.info("Controller. Find all certificates with tags");
+//        List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
+//        listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
+//                .findById(l.getId())).withSelfRel()));
+//        return listDTO;
+//    }
 
     @GetMapping("/tag/{name}")
     public List<CertificateWithTagDTO> findByTagName(@ModelAttribute("sort_by") SortingEntity sortingEntity,
