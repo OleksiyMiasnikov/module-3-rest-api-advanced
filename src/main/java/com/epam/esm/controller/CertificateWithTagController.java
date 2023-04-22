@@ -50,16 +50,6 @@ public class CertificateWithTagController{
         return pageDTO;
     }
 
-//    @GetMapping()
-//    public List<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
-//                                               @RequestParam("size") int size) {
-//        log.info("Controller. Find all certificates with tags");
-//        List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
-//        listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
-//                .findById(l.getId())).withSelfRel()));
-//        return listDTO;
-//    }
-
     @GetMapping("/tag/{name}")
     public List<CertificateWithTagDTO> findByTagName(@ModelAttribute("sort_by") SortingEntity sortingEntity,
                                                      @PathVariable("name") List<String> list) {

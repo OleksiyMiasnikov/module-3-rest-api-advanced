@@ -26,7 +26,7 @@ class TagServiceTest {
     private TagService subject;
     Tag tag;
     int id = 1;
-    String name = "tag1";
+    private final String name = "tag1";
     @BeforeEach
     void setUp(){
         subject = new TagService(repo, mapper);

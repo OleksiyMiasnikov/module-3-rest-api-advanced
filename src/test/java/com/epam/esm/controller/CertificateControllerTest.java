@@ -12,9 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,7 +26,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateControllerTest {
@@ -121,7 +117,9 @@ class CertificateControllerTest {
         when(mapper.toDTO(certificate2)).thenReturn(certificateDto2);
         when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
-        this.mockMvc.perform(get("/certificates"))
+        this.mockMvc.perform(get("/certificates")
+                        .param("page", "1")
+                        .param("size", "100"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expected1)))
