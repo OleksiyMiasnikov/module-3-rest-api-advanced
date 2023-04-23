@@ -33,8 +33,7 @@ public class TagService {
     public Tag create(CreateTagRequest createTagRequest) {
         log.info("Service. Create a new tag.");
         Tag tag = mapper.toTag(createTagRequest);
-        int result = repo.create(tag);
-        return findById(result);
+        return repo.save(tag);
     }
 
     /**
@@ -72,7 +71,10 @@ public class TagService {
      */
     public boolean delete(int id) {
         log.info("Service. Delete tag by id: " + id);
-        return repo.delete(id);
+        Optional<Tag> deletedTag = repo.findById(id);
+        if (deletedTag.isEmpty()) return false;
+        repo.delete(deletedTag.get());
+        return true;
     }
 
 }
