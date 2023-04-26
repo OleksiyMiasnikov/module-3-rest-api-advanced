@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 /**
  *  A service to work with {@link CertificateWithTag}.
@@ -46,31 +46,30 @@ public class CertificateWithTagService{
     @Transactional
     public CertificateWithTag create(CertificateWithTagRequest request) {
         log.info("Service. Create a new certificate with tag.");
-        CertificateWithTag certificateWithTag = mapper.toCertificateWithTag(request);
 
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId
         int tagId;
-        List<Tag> tagList = tagRepo.findByName(certificateWithTag.getTag());
+        List<Tag> tagList = tagRepo.findByName(request.getTag());
         if (tagList.size() == 0) {
             Tag tag = Tag.builder()
-                    .name(certificateWithTag.getTag())
+                    .name(request.getTag())
                     .build();
-            tagId = tagRepo.create(tag);
+            tagId = tagRepo.save(tag).getId();
         } else {
             tagId = tagList.get(0).getId();
         }
 
-        Certificate certificate = certificateMapper.toCertificate(certificateWithTag);
-
+        Certificate certificate = certificateMapper.toCertificate(request);
         certificate.setCreateDate(DateUtil.getDate());
         certificate.setLastUpdateDate(DateUtil.getDate());
 
-        int certificateId = certificateRepo.create(certificate);
-
-        repo.create(tagId, certificateId);
-
-        return repo.findByTagIdAndCertificateId(tagId, certificateId).orElse(null);
+        int certificateId = certificateRepo.save(certificate).getId();
+        CertificateWithTag certificateWithTag = CertificateWithTag.builder()
+                .tagId(tagId)
+                .certificateId(certificateId)
+                .build();
+        return repo.save(certificateWithTag);
     }
 
     /**
@@ -83,17 +82,18 @@ public class CertificateWithTagService{
      */
     public List<CertificateWithTag> findAllWithPage(int page, int size) {
         log.info("Controller. Find all certificates with tags");
-        if (repo.sizeOfCertificateWithTag() <= (page - 1) * size) {
-            throw new ModuleException("There are no fields for page " + page + " with size " + size,
-                    "40491",
-                    HttpStatus.BAD_REQUEST);
-        }
+        // TODO
+//        if (repo.sizeOfCertificateWithTag() <= (page - 1) * size) {
+//            throw new ModuleException("There are no fields for page " + page + " with size " + size,
+//                    "40491",
+//                    HttpStatus.BAD_REQUEST);
+//        }
         if (page <= 0 || size <= 0) {
             throw new ModuleException("Parameters page and size must be more then 0",
                     "40492",
                     HttpStatus.BAD_REQUEST);
         }
-        return repo.findAllWithPage(page, size);
+        return repo.findAll();//repo.findAllWithPage(page, size);
     }
 
     /**
@@ -105,7 +105,9 @@ public class CertificateWithTagService{
      */
     public List<CertificateWithTag> findAll(SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tags");
-        return repo.findAll(sortingEntityMapper.toSortBy(sortingEntity));
+        return repo.findAll();
+        // TODO
+        //return repo.findAll(sortingEntityMapper.toSortBy(sortingEntity));
     }
 
     /**
@@ -118,12 +120,25 @@ public class CertificateWithTagService{
      */
     public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
         log.info("Controller. Find all certificates with tag: " + name);
-        return repo.findByTagName(name, sortingEntityMapper.toSortBy(sortingEntity));
+        // TODO
+        //return repo.findByTagName(name, sortingEntityMapper.toSortBy(sortingEntity));
+        return null;
     }
 
-    public List<CertificateWithTag> findByTagName(SortingEntity sortingEntity, List<String> list) {
+    public List<CertificateWithTag> findByTagNames(SortingEntity sortingEntity, List<String> tagList) {
         log.info("Controller. Find all certificates with tag");
-        return repo.findByTagName(list, sortingEntityMapper.toSortBy(sortingEntity));
+
+        List<CertificateWithTag> list = new LinkedList<>();
+        tagList.forEach(
+                l -> {
+                    Optional<Tag> tag = tagRepo.findByName(l).stream().findAny();
+                    if (tag.isEmpty()) {
+                        return;
+                    }
+                    list.addAll(repo.findByTagId(tag.get().getId()));
+                }
+        );
+        return list;
     }
 
     /**
@@ -137,7 +152,9 @@ public class CertificateWithTagService{
      */
     public List<CertificateWithTag> findByTagNameWithPage(String name, int page, int size) {
         log.info("Controller. Find all certificates with tag: " + name);
-        return repo.findByTagNameWithPage(name, page, size);
+        // TODO
+        //return repo.findByTagNameWithPage(name, page, size);
+        return null;
     }
 
     /**
@@ -148,7 +165,13 @@ public class CertificateWithTagService{
      */
     public List<CertificateWithTag> findByPartOfNameOrDescription(String pattern) {
         log.info("Service. Find certificate by part of name or description.");
-        return repo.findByPartOfNameOrDescription(pattern);
+
+        Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
+        set.addAll(certificateRepo.findByDescriptionContaining(pattern));
+
+        List<Integer> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
+
+        return repo.findByCertificateId(listOfCertificateId);
     }
 
     /**

@@ -4,8 +4,8 @@ import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
-import com.epam.esm.util.DateUtil;
 import com.epam.esm.service.mapper.CertificateMapper;
+import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *  A service to work with {@link Certificate}.
@@ -36,7 +37,7 @@ public class CertificateService {
 
         Certificate certificate = mapper.toCertificate(request);
 
-        int result = repo.create(certificate);
+        int result = repo.save(certificate).getId();
 
         return findById(result);
     }
@@ -48,19 +49,7 @@ public class CertificateService {
      */
     public List<Certificate> findAll(int page, int size) {
         log.info("Service. Find all certificates");
-
-        if (repo.sizeOfCertificate() <= (page - 1) * size) {
-            throw new ModuleException("There are no fields for page " + page + " with size " + size,
-                    "40491",
-                    HttpStatus.BAD_REQUEST);
-        }
-        if (page <= 0 || size <= 0) {
-            throw new ModuleException("Parameters page and size must be more then 0",
-                    "40492",
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        return repo.findAll(page, size);
+        return repo.findAll();
     }
 
     /**
@@ -92,24 +81,22 @@ public class CertificateService {
         log.info("Service. Update certificate by id: " + id);
 
         Certificate oldCertificate = findById(id);
-        if (certificate.getName() == null) {
-            certificate.setName(oldCertificate.getName());
-        }
-        if (certificate.getDescription() == null) {
-            certificate.setDescription(oldCertificate.getDescription());
-        }
-        if (certificate.getPrice() == null) {
-            certificate.setPrice(oldCertificate.getPrice());
-        }
-        if (certificate.getDuration() == null) {
-            certificate.setDuration(oldCertificate.getDuration());
-        }
 
-        certificate.setLastUpdateDate(DateUtil.getDate());
+        if (certificate.getName() != null) {
+            oldCertificate.setName(certificate.getName());
+        }
+        if (certificate.getDescription() != null) {
+            oldCertificate.setDescription(certificate.getDescription());
+        }
+        if (certificate.getPrice() != null) {
+            oldCertificate.setPrice(certificate.getPrice());
+        }
+        if (certificate.getDuration() != null) {
+            oldCertificate.setDuration(certificate.getDuration());
+        }
+        oldCertificate.setLastUpdateDate(DateUtil.getDate());
 
-        repo.update(id, certificate);
-
-        return findById(id);
+        return repo.save(oldCertificate);
     }
 
     /**
@@ -120,8 +107,14 @@ public class CertificateService {
      */
     public boolean delete(int id) {
         log.info("Service. Delete certificate by id: " + id);
+        Optional<Certificate> deletedCertificate = repo.findById(id);
+        if (deletedCertificate.isPresent()) {
+            repo.delete(deletedCertificate.get());
+            return true;
+        } else {
+            return false;
+        }
 
-        return repo.delete(id);
     }
 
 }

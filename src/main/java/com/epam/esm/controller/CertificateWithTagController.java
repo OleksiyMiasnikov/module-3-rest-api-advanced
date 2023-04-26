@@ -27,7 +27,9 @@ public class CertificateWithTagController{
 
 
     @PostMapping()
-    public CertificateWithTagDTO create(@Valid @RequestBody CertificateWithTagRequest request) {
+    public CertificateWithTagDTO create(
+            @Valid
+            @RequestBody CertificateWithTagRequest request) {
         log.info("Controller. Create a new certificate with tag.");
         CertificateWithTagDTO createdDTO = mapper.toDTO(service.create(request));
         createdDTO.add(
@@ -39,7 +41,7 @@ public class CertificateWithTagController{
 
     @GetMapping()
     public PageDTO<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
-                                                       @RequestParam("size") int size) {
+                                                  @RequestParam("size") int size) {
         log.info("Controller. Find all certificates with tags");
         List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
         listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
@@ -51,10 +53,10 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/tag/{name}")
-    public List<CertificateWithTagDTO> findByTagName(@ModelAttribute("sort_by") SortingEntity sortingEntity,
+    public List<CertificateWithTagDTO> findByTagNames(@ModelAttribute("sort_by") SortingEntity sortingEntity,
                                                      @PathVariable("name") List<String> list) {
         log.info("Controller. Find all certificates with tag");
-        return service.findByTagName(sortingEntity, list).stream().map(mapper::toDTO).toList();
+        return service.findByTagNames(sortingEntity, list).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")

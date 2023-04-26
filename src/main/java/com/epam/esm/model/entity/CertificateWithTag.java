@@ -1,5 +1,6 @@
 package com.epam.esm.model.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,13 +12,14 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 public class CertificateWithTag {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String tag;
-    private String name;
-    private String description;
-    private Double price;
-    private Integer duration;
-    private Instant createDate;
-    private Instant lastUpdateDate;
+    @Column(name="tag_id")
+    private int tagId;
+    @Column(name="certificate_id")
+    private int certificateId;
+
 }

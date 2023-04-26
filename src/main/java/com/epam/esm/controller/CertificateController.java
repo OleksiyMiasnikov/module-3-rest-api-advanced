@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Slf4j
 @RestController
 @RequestMapping("/certificates")
@@ -25,7 +22,9 @@ public class CertificateController{
     private final CertificateService service;
     private final CertificateMapper mapper;
     @PostMapping()
-    public CertificateDTO create(@Valid @RequestBody CreateCertificateRequest request) {
+    public CertificateDTO create(
+            @Valid
+            @RequestBody CreateCertificateRequest request) {
         log.info("Controller. Create certificate with name: " + request.getName());
         return mapper.toDTO(service.create(request));
     }
@@ -36,8 +35,8 @@ public class CertificateController{
         log.info("Controller. Find all certificates");
         List<CertificateDTO> list = service.findAll(page, size).stream().map(mapper::toDTO).toList();
         PageDTO<CertificateDTO> pageDTO = new PageDTO<>(list);
-        pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page - 1, size)).withSelfRel());
-        pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page + 1, size)).withSelfRel());
+        //pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page - 1, size)).withSelfRel());
+        //pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page + 1, size)).withSelfRel());
         return pageDTO;
     }
 

@@ -1,5 +1,6 @@
 package com.epam.esm.model.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,15 +12,17 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name="user_order")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int userId;
-    private String userName;
-    private int CertificateWithTagId;
-    private String tagName;
-    private String certificateName;
-    private String description;
-    private Integer duration;
     private Double cost;
+    @Column(name="create_date")
     private Instant createDate;
+    @Column(name="user_id")
+    private int userId;
+    @Column(name="certificate_with_tag_id")
+    private int CertificateWithTagId;
 }
