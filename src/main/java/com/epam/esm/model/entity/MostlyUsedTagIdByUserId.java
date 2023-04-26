@@ -13,10 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user_with_max_total_cost")
-public class UserWithMaxTotalCost {
+@Table(name = "mostly_used_tag_id_by_user_id")
+public class MostlyUsedTagIdByUserId {
     @Id
-    private Integer userId;
     private Integer tagId;
-    private Double totalCost;
+    private Long countTag;
 }

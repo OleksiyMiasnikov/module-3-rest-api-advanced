@@ -1,5 +1,6 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.model.entity.MostlyUsedTagIdByUserId;
 import com.epam.esm.model.entity.UserOrder;
 import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,18 +24,22 @@ public interface OrderRepository extends JpaRepository<UserOrder, Integer> {
     List<UserWithMaxTotalCost> findUsersWithTotalCost();
 
     @Query("""
-               select
-                    cwt.tagId
-                    
-               from
-                    CertificateWithTag cwt,
-                    (
-                        select u.CertificateWithTagId AS id
-                        from UserOrder u
-                        where u.userId = 3
-                    ) uo
-                    where cwt.id = uo.id   
-                    
+            select
+                new MostlyUsedTagIdByUserId(
+                    cwt.tagId as tagId,
+                    count(cwt) as countTag
+                )
+            from
+                CertificateWithTag cwt,
+                (
+                    select u.CertificateWithTagId AS id
+                    from UserOrder u
+                    where u.userId = ?1
+                ) uo
+                where cwt.id = uo.id
+            group by cwt.tagId
+            order by countTag DESC
+            limit 1
             """)
-    List<Object> findMostlyUsedTag(Integer userId);
+    MostlyUsedTagIdByUserId findMostlyUsedTag(Integer userId);
 }

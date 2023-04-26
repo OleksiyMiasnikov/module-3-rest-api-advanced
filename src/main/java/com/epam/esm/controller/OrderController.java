@@ -47,9 +47,9 @@ public class OrderController {
     }
 
     @GetMapping("/max")
-    public Object findUserWithMaxTotalCost() {
+    public UserWithMaxTotalCostDTO findUserWithMaxTotalCost() {
         log.info("Controller. Find find user id with max total cost");
-        return service.findUserWithMaxTotalCost();
+        return userWithMaxTotalCostMapper.toDTO(service.findUserWithMaxTotalCost());
     }
 
 }

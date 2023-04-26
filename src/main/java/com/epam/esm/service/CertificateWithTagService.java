@@ -10,8 +10,6 @@ import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
-import com.epam.esm.service.mapper.CertificateWithTagMapper;
-import com.epam.esm.service.mapper.SortingEntityMapper;
 import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +30,9 @@ import java.util.*;
 @Slf4j
 public class CertificateWithTagService{
     private final CertificateWithTagRepository repo;
-    private final CertificateWithTagMapper mapper;
     private final TagRepository tagRepo;
     private final CertificateRepository certificateRepo;
     private final CertificateMapper certificateMapper;
-    private final SortingEntityMapper sortingEntityMapper;
 
     /**
      * Creates new record of certificate with tag.
@@ -78,8 +74,7 @@ public class CertificateWithTagService{
      * Finds all certificates with tags by page.
      * Result will be selected by page and size.
      *
-     * @param page number of page
-     * @param size number of rows on the page
+     * @param pageable page parameters
      * @return List of {@link CertificateWithTag} List of all certificates with tags from database
      */
     public Page<CertificateWithTag> findAllWithPage(Pageable pageable) {

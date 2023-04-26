@@ -15,8 +15,8 @@ public class UserWithMaxTotalCostMapper {
     private final UserRepository userRepository;
     public UserWithMaxTotalCostDTO toDTO(UserWithMaxTotalCost entity) {
         return UserWithMaxTotalCostDTO.builder()
-               // .user(userRepository.findById(entity.getUser_id()).get().getName())
-               // .tag(tagRepository.findById(entity.getTag_id()).get().getName())
+                .user(userRepository.findById(entity.getUserId()).get().getName())
+                .tag(tagRepository.findById(entity.getTagId()).get().getName())
                 .totalCost(entity.getTotalCost())
                 .build();
     }

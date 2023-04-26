@@ -3,7 +3,6 @@ package com.epam.esm.service.mapper;
 import com.epam.esm.controller.CertificateWithTagController;
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
-import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;

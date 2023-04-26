@@ -1,29 +1,11 @@
 package com.epam.esm.service;
 
-import com.epam.esm.model.DTO.SortingEntity;
-import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
-import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.model.entity.CertificateWithTag;
-import com.epam.esm.model.entity.Tag;
-import com.epam.esm.repository.CertificateRepository;
-import com.epam.esm.repository.CertificateWithTagRepository;
-import com.epam.esm.repository.TagRepository;
-import com.epam.esm.service.mapper.CertificateMapper;
-import com.epam.esm.service.mapper.CertificateWithTagMapper;
-import com.epam.esm.service.mapper.SortingEntityMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateWithTagServiceTest {
