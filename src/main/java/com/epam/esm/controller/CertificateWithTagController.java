@@ -1,14 +1,17 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.DTO.PageDTO;
 import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
+import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
 import com.epam.esm.service.mapper.CertificateWithTagMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,16 +43,11 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    public PageDTO<CertificateWithTagDTO> findAll(@RequestParam("page") int page,
-                                                  @RequestParam("size") int size) {
+    public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
         log.info("Controller. Find all certificates with tags");
-        List<CertificateWithTagDTO> listDTO = service.findAllWithPage(page, size).stream().map(mapper::toDTO).toList();
-        listDTO.forEach(l -> l.add(linkTo(methodOn(CertificateWithTagController.class)
-                .findById(l.getId())).withSelfRel()));
-        PageDTO<CertificateWithTagDTO> pageDTO = new PageDTO<>(listDTO);
-        pageDTO.add(linkTo(methodOn(CertificateWithTagController.class).findAll(page - 1, size)).withSelfRel());
-        pageDTO.add(linkTo(methodOn(CertificateWithTagController.class).findAll(page + 1, size)).withSelfRel());
-        return pageDTO;
+
+        Page<CertificateWithTag> page = service.findAllWithPage(pageable);
+        return page.map(mapper::toDTO);
     }
 
     @GetMapping("/tag/{name}")

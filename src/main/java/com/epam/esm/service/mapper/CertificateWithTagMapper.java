@@ -1,5 +1,6 @@
 package com.epam.esm.service.mapper;
 
+import com.epam.esm.controller.CertificateWithTagController;
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
@@ -16,6 +17,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Component
 @RequiredArgsConstructor
 public class CertificateWithTagMapper {
@@ -24,13 +28,6 @@ public class CertificateWithTagMapper {
     private final TagRepository tagRepository;
 
     private static final String PATTERN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-
-//    public CertificateWithTag toCertificateWithTag(CertificateWithTagRequest request) {
-//        return CertificateWithTag.builder()
-//                .tagId(request.getTagId())
-//                .certificateId(request.getCertificateId())
-//                .build();
-//    }
 
     public CertificateWithTagDTO toDTO(CertificateWithTag certificateWithTag) {
 
@@ -46,7 +43,7 @@ public class CertificateWithTagMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
                 .withZone(ZoneId.systemDefault());
 
-        return CertificateWithTagDTO.builder()
+        CertificateWithTagDTO certificateWithTagDTO = CertificateWithTagDTO.builder()
                 .id(certificateWithTag.getId())
                 .tag(tag.getName())
                 .name(certificate.getName())
@@ -56,5 +53,9 @@ public class CertificateWithTagMapper {
                 .createDate(formatter.format(certificate.getCreateDate()))
                 .lastUpdateDate(formatter.format(certificate.getLastUpdateDate()))
                 .build();
+        certificateWithTagDTO.add(linkTo(methodOn(CertificateWithTagController.class)
+                .findById(certificateWithTag.getId()))
+                .withSelfRel());
+        return certificateWithTagDTO;
     }
 }

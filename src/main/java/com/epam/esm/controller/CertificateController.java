@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.DTO.PageDTO;
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
@@ -9,9 +8,9 @@ import com.epam.esm.service.mapper.CertificateMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,14 +29,10 @@ public class CertificateController{
     }
 
     @GetMapping()
-    public PageDTO<CertificateDTO> findAll(@RequestParam("page") int page,
-                                           @RequestParam("size") int size) {
+    public Page<CertificateDTO> findAll(Pageable pageable) {
         log.info("Controller. Find all certificates");
-        List<CertificateDTO> list = service.findAll(page, size).stream().map(mapper::toDTO).toList();
-        PageDTO<CertificateDTO> pageDTO = new PageDTO<>(list);
-        //pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page - 1, size)).withSelfRel());
-        //pageDTO.add(linkTo(methodOn(CertificateController.class).findAll(page + 1, size)).withSelfRel());
-        return pageDTO;
+        Page<Certificate> page = service.findAll(pageable);
+        return page.map(mapper::toDTO);
     }
 
     @GetMapping("/{id}")

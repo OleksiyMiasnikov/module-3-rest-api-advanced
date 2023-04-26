@@ -15,6 +15,8 @@ import com.epam.esm.service.mapper.SortingEntityMapper;
 import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,20 +82,9 @@ public class CertificateWithTagService{
      * @param size number of rows on the page
      * @return List of {@link CertificateWithTag} List of all certificates with tags from database
      */
-    public List<CertificateWithTag> findAllWithPage(int page, int size) {
+    public Page<CertificateWithTag> findAllWithPage(Pageable pageable) {
         log.info("Controller. Find all certificates with tags");
-        // TODO
-//        if (repo.sizeOfCertificateWithTag() <= (page - 1) * size) {
-//            throw new ModuleException("There are no fields for page " + page + " with size " + size,
-//                    "40491",
-//                    HttpStatus.BAD_REQUEST);
-//        }
-        if (page <= 0 || size <= 0) {
-            throw new ModuleException("Parameters page and size must be more then 0",
-                    "40492",
-                    HttpStatus.BAD_REQUEST);
-        }
-        return repo.findAll();//repo.findAllWithPage(page, size);
+        return repo.findAll(pageable);
     }
 
     /**
