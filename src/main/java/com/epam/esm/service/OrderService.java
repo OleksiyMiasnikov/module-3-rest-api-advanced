@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
-import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.UserOrder;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import com.epam.esm.repository.OrderRepository;
@@ -14,10 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
- *  A service to work with {@link Order}.
+ *  A service to work with {@link UserOrder}.
  */
 
 @Service
@@ -33,14 +35,14 @@ public class OrderService {
      * Creates new record of order.
      *
      * @param request - created order request
-     * @return {@link Order} created order
+     * @return {@link UserOrder} created order
      */
     @Transactional
-    public Order create(CreateOrderRequest request) {
-        log.info("Service. Create a new order");
-        Order order = orderMapper.toOrder(request);
+    public UserOrder create(CreateOrderRequest request) {
+        log.info("Service. Create a new userOrder");
+        UserOrder userOrder = orderMapper.toOrder(request);
 
-        int id = repo.save(order).getId();
+        int id = repo.save(userOrder).getId();
 
         return repo.findById(id).orElse(null);
     }
@@ -48,14 +50,14 @@ public class OrderService {
     /**
      * Finds all orders.
      *
-     * @return List of {@link Order} List of all orders.
+     * @return List of {@link UserOrder} List of all orders.
      */
-    public List<Order> findAll() {
+    public List<UserOrder> findAll() {
         log.info("Service. Find all certificates with tags");
         return repo.findAll();
     }
 
-    public List<Order> findByUser(String name) {
+    public List<UserOrder> findByUser(String name) {
         log.info("Service. Find all orders by user: " + name);
 
         User user = userRepository.findByName(name).stream().findAny()
@@ -66,8 +68,17 @@ public class OrderService {
         return repo.findByUserId(user.getId());
     }
 
-    public UserWithMaxTotalCost findUserWithMaxTotalCost(){
+    public Object findUserWithMaxTotalCost(){
         log.info("Service. Find the most widely used tag of a user with the highest cost of all orders.");
+        UserWithMaxTotalCost userWithMaxTotalCost =
+                repo.findUsersWithTotalCost().stream().max(Comparator.comparing(UserWithMaxTotalCost::getTotalCost))
+                        .orElseThrow(() -> new ModuleException("Couldn't find the most widely used tag " +
+                                "of a user with the highest cost of all orders.",
+                        "50011",
+                        HttpStatus.INTERNAL_SERVER_ERROR));
+
+        Object result = repo.findMostlyUsedTag(userWithMaxTotalCost.getUserId());
+        return result;
         //TODO
 //        UserWithMaxTotalCost userWithMaxTotalCost = repo.findUserWithMaxTotalCost()
 //                .orElseThrow(() -> new ModuleException("Couldn't find the most widely used tag of a user with the highest cost of all orders.",
@@ -77,7 +88,7 @@ public class OrderService {
 //        userWithMaxTotalCost.setTag_id(repo.findMostlyUsedTag(userWithMaxTotalCost.getUser_id()));
 //
 //        return userWithMaxTotalCost;
-        return null;
+       // return null;
     }
 
 }

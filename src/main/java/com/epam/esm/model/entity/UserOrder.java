@@ -14,7 +14,7 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name="user_order")
-public class Order {
+public class UserOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

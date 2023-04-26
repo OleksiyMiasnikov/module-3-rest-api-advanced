@@ -6,7 +6,7 @@ import com.epam.esm.model.DTO.order.CreateOrderRequest;
 import com.epam.esm.model.DTO.order.OrderDTO;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
-import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.UserOrder;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
@@ -30,7 +30,7 @@ public class OrderMapper {
     private final CertificateWithTagMapper mapper;
     private static final String PATTERN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
-    public Order toOrder(CreateOrderRequest request) {
+    public UserOrder toOrder(CreateOrderRequest request) {
         CertificateWithTag certificateWithTag
                 = certificateWithTagRepository.findById(request.getCertificateWithTagId())
                           .orElseThrow(() -> new ModuleException("Requested certificate with tag is not found (id=" +
@@ -47,7 +47,7 @@ public class OrderMapper {
                         "40472",
                         HttpStatus.NOT_FOUND));
 
-        return Order.builder()
+        return UserOrder.builder()
                 .userId(request.getUserId())
                 .CertificateWithTagId(request.getCertificateWithTagId())
                 .cost(certificate.getPrice())
@@ -55,9 +55,9 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderDTO toDTO(Order order) {
-        Optional<User> userOptional = userRepository.findById(order.getUserId());
-        Optional<CertificateWithTag> certificateWithTagOptional = certificateWithTagRepository.findById(order.getCertificateWithTagId());
+    public OrderDTO toDTO(UserOrder userOrder) {
+        Optional<User> userOptional = userRepository.findById(userOrder.getUserId());
+        Optional<CertificateWithTag> certificateWithTagOptional = certificateWithTagRepository.findById(userOrder.getCertificateWithTagId());
 
         if (userOptional.isEmpty() || certificateWithTagOptional.isEmpty()) {
             throw new ModuleException("ups...", "50001", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -69,15 +69,15 @@ public class OrderMapper {
                 .withZone(ZoneId.systemDefault());
 
         return OrderDTO.builder()
-                .id(order.getId())
+                .id(userOrder.getId())
                 .userName(user.getName())
-                .CertificateWithTagId(order.getCertificateWithTagId())
+                .CertificateWithTagId(userOrder.getCertificateWithTagId())
                 .tagName(certificateWithTag.getTag())
                 .certificateName(certificateWithTag.getName())
                 .description(certificateWithTag.getDescription())
                 .duration(certificateWithTag.getDuration())
-                .cost(order.getCost())
-                .createDate(formatter.format(order.getCreateDate()))
+                .cost(userOrder.getCost())
+                .createDate(formatter.format(userOrder.getCreateDate()))
                 .build();
     }
 }

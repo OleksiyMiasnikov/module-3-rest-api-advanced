@@ -1,7 +1,6 @@
 package com.epam.esm.repository.OLD;
 
-import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.model.entity.Order;
+import com.epam.esm.model.entity.UserOrder;
 import com.epam.esm.model.entity.UserWithMaxTotalCost;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,50 +64,50 @@ public class OrderRepositoryOLD {
                     ORDER BY count_of_tags DESC LIMIT 1) tags_selection
             """;
 
-    public int create(Order order) {
-        log.info("Repository. Create a new order.");
+    public int create(UserOrder userOrder) {
+        log.info("Repository. Create a new userOrder.");
         final String SQL = "INSERT INTO user_order VALUES (default, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
                     .prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-            ps.setDouble(1, order.getCost());
-            ps.setTimestamp(2, Timestamp.from(order.getCreateDate()));
-            ps.setInt(3, order.getUserId());
-            ps.setInt(4, order.getCertificateWithTagId());
+            ps.setDouble(1, userOrder.getCost());
+            ps.setTimestamp(2, Timestamp.from(userOrder.getCreateDate()));
+            ps.setInt(3, userOrder.getUserId());
+            ps.setInt(4, userOrder.getCertificateWithTagId());
             return ps;
         }, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
-    public List<Order> findAll() {
+    public List<UserOrder> findAll() {
         log.info("Repository. Find all orders");
         return jdbcTemplate.query(ORDER_SQL,
-                new BeanPropertyRowMapper<>(Order.class));
+                new BeanPropertyRowMapper<>(UserOrder.class));
     }
 
-    public Optional<Order> findById(int id){
-        log.info("Repository. Find order by id: " + id);
+    public Optional<UserOrder> findById(int id){
+        log.info("Repository. Find userOrder by id: " + id);
         return jdbcTemplate.query("SELECT * FROM (" + ORDER_SQL + ") tab WHERE tab.id=?",
-                        new BeanPropertyRowMapper<>(Order.class),
+                        new BeanPropertyRowMapper<>(UserOrder.class),
                         id)
                 .stream()
                 .findAny();
     }
 
     public boolean delete(int id) {
-        log.info("Repository. Delete order by id: " + id);
+        log.info("Repository. Delete userOrder by id: " + id);
         int result = jdbcTemplate.update("DELETE FROM user_order WHERE id=?", id);
         log.info("result of deleting " + result);
         return result == 1;
     }
 
-    public List<Order> findByUser(String user) {
+    public List<UserOrder> findByUser(String user) {
         log.info("Repository. Find all orders by user: " + user);
         String sql = "SELECT * FROM (" + ORDER_SQL + ") tab WHERE tab.user_name = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class), user);
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(UserOrder.class), user);
     }
 
     public Optional<UserWithMaxTotalCost> findUserWithMaxTotalCost() {
