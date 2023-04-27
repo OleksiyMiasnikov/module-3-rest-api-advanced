@@ -38,9 +38,7 @@ public class CertificateService {
 
         Certificate certificate = mapper.toCertificate(request);
 
-        int result = repo.save(certificate).getId();
-
-        return findById(result);
+        return repo.save(certificate);
     }
 
     /**

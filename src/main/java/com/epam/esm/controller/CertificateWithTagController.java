@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -45,15 +44,15 @@ public class CertificateWithTagController{
     public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
         log.info("Controller. Find all certificates with tags");
 
-        Page<CertificateWithTag> page = service.findAllWithPage(pageable);
+        Page<CertificateWithTag> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
 
     @GetMapping("/tag/{name}")
-    public List<CertificateWithTagDTO> findByTagNames(@ModelAttribute("sort_by") SortingEntity sortingEntity,
+    public List<CertificateWithTagDTO> findByTagNames(Pageable pageable,
                                                      @PathVariable("name") List<String> list) {
         log.info("Controller. Find all certificates with tag");
-        return service.findByTagNames(sortingEntity, list).stream().map(mapper::toDTO).toList();
+        return service.findByTagNames(pageable, list).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/{id}")

@@ -41,9 +41,7 @@ public class OrderService {
         log.info("Service. Create a new userOrder");
         UserOrder userOrder = orderMapper.toOrder(request);
 
-        int id = repo.save(userOrder).getId();
-
-        return repo.findById(id).orElse(null);
+        return repo.save(userOrder);
     }
 
     /**

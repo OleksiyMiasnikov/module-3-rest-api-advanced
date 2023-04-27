@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
-import com.epam.esm.model.DTO.SortingEntity;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -77,70 +76,26 @@ public class CertificateWithTagService{
      * @param pageable page parameters
      * @return List of {@link CertificateWithTag} List of all certificates with tags from database
      */
-    public Page<CertificateWithTag> findAllWithPage(Pageable pageable) {
+    public Page<CertificateWithTag> findAll(Pageable pageable) {
         log.info("Controller. Find all certificates with tags");
         return repo.findAll(pageable);
     }
 
-    /**
-     * Finds all certificates with tags.
-     * Result will be sorted by name and created date
-     *
-     * @param sortingEntity sorting criterion
-     * @return List of {@link CertificateWithTag} List of all certificates with tags from database
-     */
-    public List<CertificateWithTag> findAll(SortingEntity sortingEntity) {
-        log.info("Controller. Find all certificates with tags");
-        return repo.findAll();
-        // TODO
-        //return repo.findAll(sortingEntityMapper.toSortBy(sortingEntity));
-    }
 
     /**
-     * Finds all certificates by tag name.
-     * Result will be sorted by name and created date
+     * Finds all certificates by tags name.
      *
-     * @param name name of tag
-     * @param sortingEntity sorting criterion
+     * @param pageable page parameters
+     * @param tagList list with tags
      * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
      */
-    public List<CertificateWithTag> findByTagName(String name, SortingEntity sortingEntity) {
-        log.info("Controller. Find all certificates with tag: " + name);
-        // TODO
-        //return repo.findByTagName(name, sortingEntityMapper.toSortBy(sortingEntity));
-        return null;
-    }
-
-    public List<CertificateWithTag> findByTagNames(SortingEntity sortingEntity, List<String> tagList) {
+    public List<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
         log.info("Controller. Find all certificates with tag");
+        List<Integer> tagIds = tagList.stream()
+                .map(t -> tagRepo.findByName(t).get(0).getId())
+                .toList();
 
-        List<CertificateWithTag> list = new LinkedList<>();
-        tagList.forEach(
-                l -> {
-                    Optional<Tag> tag = tagRepo.findByName(l).stream().findAny();
-                    if (tag.isEmpty()) {
-                        return;
-                    }
-                    list.addAll(repo.findByTagId(tag.get().getId()));
-                }
-        );
-        return list;
-    }
-
-    /**
-     * Finds all certificates by tag name.
-     * Result will be sorted by name and created date
-     *
-     * @param name name of tag
-     * @param page number of page
-     * @param size number of rows on the page
-     * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
-     */
-    public List<CertificateWithTag> findByTagNameWithPage(String name, int page, int size) {
-        log.info("Controller. Find all certificates with tag: " + name);
-        // TODO
-        //return repo.findByTagNameWithPage(name, page, size);
-        return null;
+        return repo.findByTagIds(tagIds, pageable);
     }
 
     /**

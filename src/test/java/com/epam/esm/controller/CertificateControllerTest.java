@@ -12,6 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -69,6 +73,7 @@ class CertificateControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(subject)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setControllerAdvice(new ModuleExceptionHandler())
                 .build();
     }
@@ -112,20 +117,23 @@ class CertificateControllerTest {
                 .price(150d)
                 .duration(14)
                 .build();
-        when(service.findAll(1,100)).thenReturn(list);
+        Page<Certificate> page = new PageImpl<>(list);
+        Pageable pageable = Pageable.ofSize(3).withPage(0);
+
+        when(service.findAll(pageable)).thenReturn(page);
         when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
         when(mapper.toDTO(certificate2)).thenReturn(certificateDto2);
         when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
         this.mockMvc.perform(get("/certificates")
-                        .param("page", "1")
-                        .param("size", "100"))
+                        .param("page", "0")
+                        .param("size", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expected1)))
                 .andExpect(content().string(containsString(expected2)))
                 .andExpect(content().string(containsString(expected3)));
-        verify(service).findAll(1,100);
+        verify(service).findAll(pageable);
     }
 
     @Test
