@@ -89,12 +89,11 @@ public class CertificateWithTagService{
      * @param tagList list with tags
      * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
      */
-    public List<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
+    public Page<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
         log.info("Controller. Find all certificates with tag");
         List<Integer> tagIds = tagList.stream()
                 .map(t -> tagRepo.findByName(t).get(0).getId())
                 .toList();
-
         return repo.findByTagIds(tagIds, pageable);
     }
 

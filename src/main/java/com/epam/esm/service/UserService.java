@@ -7,6 +7,8 @@ import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +44,9 @@ public class UserService {
      *
      * @return List of {@link User} List of all users from database
      */
-    public List<User> findAll() {
+    public Page<User> findAll(Pageable pageable) {
         log.info("Service. Find all users");
-        return repo.findAll();
+        return repo.findAll(pageable);
     }
 
     /**

@@ -49,10 +49,11 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/tag/{name}")
-    public List<CertificateWithTagDTO> findByTagNames(Pageable pageable,
+    public Page<CertificateWithTagDTO> findByTagNames(Pageable pageable,
                                                      @PathVariable("name") List<String> list) {
         log.info("Controller. Find all certificates with tag");
-        return service.findByTagNames(pageable, list).stream().map(mapper::toDTO).toList();
+        Page<CertificateWithTag> page = service.findByTagNames(pageable, list);
+        return page.map(mapper::toDTO);
     }
 
     @GetMapping("/{id}")

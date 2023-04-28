@@ -7,7 +7,8 @@ import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +33,9 @@ public class TagService {
      * @return {@link Tag} created tag
      */
     public Tag create(CreateTagRequest createTagRequest) {
-        //log.info("Service. Create a new tag.");
+        log.info("Service. Create a new tag.");
         Tag tag = mapper.toTag(createTagRequest);
-        try {
-            tag = repo.save(tag);
-        } catch (DataIntegrityViolationException e) {
-
-        }
-        return tag;
+        return repo.save(tag);
     }
 
     /**
@@ -55,6 +51,18 @@ public class TagService {
         return result.orElseThrow(() -> new ModuleException("Requested tag is not found (id=" + id + ")",
                 "40401",
                 HttpStatus.NOT_FOUND));
+    }
+
+    /**
+     * Finds all {@link Tag} by name.
+     * Returns all records if name is empty
+     *
+     * @param name tag name
+     * @return List {@link Tag} List of tags
+     */
+    public Page<Tag> findByNameWithPageable(String name, Pageable pageable) {
+        log.info("Service. Find tag by name: " + name);
+        return (name.isEmpty()) ? repo.findAll(pageable) : repo.findByName(name, pageable);
     }
 
     /**

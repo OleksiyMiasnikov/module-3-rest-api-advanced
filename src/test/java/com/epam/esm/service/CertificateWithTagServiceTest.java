@@ -137,14 +137,15 @@ class CertificateWithTagServiceTest {
                 .name("tag 4")
                 .build();
         Pageable pageable = Pageable.ofSize(3).withPage(0);
+        Page<CertificateWithTag> page = new PageImpl<>(List.of(certificateWithTag));
 
         when(tagRepo.findByName(tag1.getName())).thenReturn(List.of(tag1));
         when(tagRepo.findByName(tag2.getName())).thenReturn(List.of(tag2));
         when(repo.findByTagIds(List.of(tag1.getId(), tag2.getId()), pageable))
-                .thenReturn(List.of(certificateWithTag));
+                .thenReturn(page);
 
         List<CertificateWithTag> result = subject
-                .findByTagNames(pageable, List.of(tag1.getName(), tag2.getName()));
+                .findByTagNames(pageable, List.of(tag1.getName(), tag2.getName())).stream().toList();
 
         assertThat(result).isEqualTo(List.of(certificateWithTag));
 

@@ -8,6 +8,8 @@ import com.epam.esm.service.mapper.TagMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,11 +39,13 @@ public class TagController{
     }
 
     @GetMapping()
-    public List<TagDTO> findByName(
+    public Page<TagDTO> findByName(
             @Valid
-            @ModelAttribute ("name") String name) {
+            @ModelAttribute ("name") String name,
+            Pageable pageable) {
         log.info("Controller. Find tag by name: " + name);
-        return service.findByName(name).stream().map(mapper::toDTO).toList();
+        Page<Tag> page = service.findByNameWithPageable(name, pageable);
+        return page.map(mapper::toDTO);
     }
 
     @DeleteMapping("/{id}")

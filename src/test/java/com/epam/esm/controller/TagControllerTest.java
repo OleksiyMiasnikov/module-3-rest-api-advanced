@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,6 +75,7 @@ class TagControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(subject)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setControllerAdvice(new ModuleExceptionHandler())
                 .build();
     }
@@ -116,33 +122,42 @@ class TagControllerTest {
     @Test
     void findByNameTest() throws Exception{
         String expected = "[{\"id\":2,\"name\":\"second tag\"}]";
+        Page<Tag> page = new PageImpl<>(new LinkedList<>(List.of(tag2)));
+        Pageable pageable = Pageable.ofSize(3).withPage(0);
 
-        when(service.findByName(any(String.class))).thenReturn(new LinkedList<>(List.of(tag2)));
+        when(service.findByNameWithPageable("first tag", pageable)).thenReturn(page);
         when(mapper.toDTO(tag1)).thenReturn(tagDto1);
         when(mapper.toDTO(tag2)).thenReturn(tagDto2);
 
-        this.mockMvc.perform(get("/tags").param("name","first tag"))
+        this.mockMvc.perform(get("/tags")
+                        .param("name","first tag")
+                        .param("page", "0")
+                        .param("size", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(expected));
+                .andExpect(content().string(containsString(expected)));
 
-        verify(service).findByName("first tag");
+        verify(service).findByNameWithPageable("first tag", pageable);
     }
 
     @Test
     void findAllTest() throws Exception {
         String expected = "[{\"id\":1,\"name\":\"first tag\"},{\"id\":2,\"name\":\"second tag\"}]";
+        Page<Tag> page = new PageImpl<>(listOfTwoTags);
+        Pageable pageable = Pageable.ofSize(3).withPage(0);
 
-        when(service.findByName("")).thenReturn(listOfTwoTags);
+        when(service.findByNameWithPageable("", pageable)).thenReturn(page);
         when(mapper.toDTO(tag1)).thenReturn(tagDto1);
         when(mapper.toDTO(tag2)).thenReturn(tagDto2);
 
-        this.mockMvc.perform(get("/tags"))
+        this.mockMvc.perform(get("/tags")
+                        .param("page", "0")
+                        .param("size", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(expected));
+                .andExpect(content().string(containsString(expected)));
 
-        verify(service).findByName("");
+        verify(service).findByNameWithPageable("", pageable);
     }
 
     @Test

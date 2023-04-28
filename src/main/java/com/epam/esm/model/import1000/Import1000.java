@@ -2,14 +2,13 @@ package com.epam.esm.model.import1000;
 
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
-import com.epam.esm.model.DTO.order.OrderDTO;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
-import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -22,7 +21,6 @@ public class Import1000 {
 
     private final UserService userService;
     private final TagService tagService;
-    private final CertificateService certificateService;
     private final CertificateWithTagService certificateWithTagService;
     private final OrderService orderService;
 
@@ -58,7 +56,7 @@ public class Import1000 {
 
     public void createCertificatesWithTags() {
         List<Tag> tags = tagService.findByName("");
-        List<User> users = userService.findAll();
+        List<User> users = userService.findAll(Pageable.ofSize(10000).withPage(0)).toList();
         System.out.println("Tags - " + tags.size());
         System.out.println("Users - " + users.size());
         Random random = new Random();

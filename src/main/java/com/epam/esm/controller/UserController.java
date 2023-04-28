@@ -1,10 +1,13 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.model.DTO.user.UserDTO;
+import com.epam.esm.model.entity.User;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +32,9 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<UserDTO> findAll() {
+    public Page<UserDTO> findAll(Pageable pageable) {
         log.info("Controller. Find all certificates");
-        return service.findAll().stream().map(mapper::toDTO).toList();
+        Page<User> page = service.findAll(pageable);
+        return page.map(mapper::toDTO);
     }
 }
