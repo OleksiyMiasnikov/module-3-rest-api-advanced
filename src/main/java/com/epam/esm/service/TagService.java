@@ -7,6 +7,7 @@ import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +32,14 @@ public class TagService {
      * @return {@link Tag} created tag
      */
     public Tag create(CreateTagRequest createTagRequest) {
-        log.info("Service. Create a new tag.");
+        //log.info("Service. Create a new tag.");
         Tag tag = mapper.toTag(createTagRequest);
-        return repo.save(tag);
+        try {
+            tag = repo.save(tag);
+        } catch (DataIntegrityViolationException e) {
+
+        }
+        return tag;
     }
 
     /**

@@ -3,12 +3,15 @@ package com.epam.esm.controller;
 import com.epam.esm.model.DTO.UserWithMaxTotalCostDTO;
 import com.epam.esm.model.DTO.order.CreateOrderRequest;
 import com.epam.esm.model.DTO.order.OrderDTO;
+import com.epam.esm.model.entity.UserOrder;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.mapper.OrderMapper;
 import com.epam.esm.service.mapper.UserWithMaxTotalCostMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +36,10 @@ public class OrderController {
     }
 
     @GetMapping()
-    public List<OrderDTO> findAll() {
+    public Page<OrderDTO> findAll(Pageable pageable) {
         log.info("Controller. Find all orders");
-        return service.findAll().stream().map(mapper::toDTO).toList();
+        Page<UserOrder> page = service.findAll(pageable);
+        return page.map(mapper::toDTO);
     }
 
     @GetMapping("/{user}")

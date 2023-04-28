@@ -10,6 +10,8 @@ import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +40,7 @@ public class OrderService {
      */
     @Transactional
     public UserOrder create(CreateOrderRequest request) {
-        log.info("Service. Create a new userOrder");
+        //log.info("Service. Create a new userOrder");
         UserOrder userOrder = orderMapper.toOrder(request);
 
         return repo.save(userOrder);
@@ -49,9 +51,9 @@ public class OrderService {
      *
      * @return List of {@link UserOrder} List of all orders.
      */
-    public List<UserOrder> findAll() {
+    public Page<UserOrder> findAll(Pageable pageable) {
         log.info("Service. Find all certificates with tags");
-        return repo.findAll();
+        return repo.findAll(pageable);
     }
 
     public List<UserOrder> findByUser(String name) {

@@ -42,7 +42,7 @@ public class CertificateWithTagService{
      */
     @Transactional
     public CertificateWithTag create(CertificateWithTagRequest request) {
-        log.info("Service. Create a new certificate with tag.");
+        //log.info("Service. Create a new certificate with tag.");
 
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId

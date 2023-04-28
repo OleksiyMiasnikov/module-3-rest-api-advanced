@@ -1,6 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ModuleException;
+import com.epam.esm.model.DTO.tag.CreateTagRequest;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +45,17 @@ public class UserService {
     public List<User> findAll() {
         log.info("Service. Find all users");
         return repo.findAll();
+    }
+
+    /**
+     * Creates a new user.
+     *
+     * @param name - name of user
+     * @return {@link User} created tag
+     */
+    public User create(String name) {
+        //log.info("Service. Create a new user.");
+        User user = User.builder().name(name).build();
+        return repo.save(user);
     }
 }
