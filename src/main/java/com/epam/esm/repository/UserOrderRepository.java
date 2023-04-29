@@ -26,7 +26,7 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
     UserWithMaxTotalCost findUsersWithTotalCost();
 
     @Query("""
-            select               
+            select
                 cwt.tagId as tagId,
                 count(cwt) as countTag
             from

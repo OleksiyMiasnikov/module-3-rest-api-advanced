@@ -72,15 +72,14 @@ public class UserOrderService {
 
     public UserWithMaxTotalCostDTO findUserWithMaxTotalCost(){
         log.info("Finding the most widely used tag of a user with the highest cost of all orders.");
+
         UserWithMaxTotalCost userWithMaxTotalCost =
                 repo.findUsersWithTotalCost();
+
         int userId = userWithMaxTotalCost.getUserId();
+        int tagId = repo.findMostlyUsedTag(userId).getTagId();
         Double totalCost = userWithMaxTotalCost.getTotalCost();
 
-        log.info("Find the most widely used tag of a user with the highest cost of all orders.");
-
-        MostlyUsedTagIdByUserId mostlyUsedTagIdByUserId = repo.findMostlyUsedTag(userId);
-        int tagId = mostlyUsedTagIdByUserId.getTagId();
         return UserWithMaxTotalCostDTO.builder()
                 .user(userRepository.findById(userId).get().getName())
                 .tag(tagRepository.findById(tagId).get().getName())

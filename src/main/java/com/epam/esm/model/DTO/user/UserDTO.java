@@ -1,10 +1,12 @@
 package com.epam.esm.model.DTO.user;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
     private int id;
     private String name;
