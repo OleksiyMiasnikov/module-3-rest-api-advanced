@@ -16,19 +16,19 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
 
     @Query("""
            select
-                new UserWithMaxTotalCost(u.userId as userId,
-                sum(u.cost) as totalCost)
+                u.userId as userId,
+                sum(u.cost) as totalCost
             from UserOrder u
             group by u.userId
+            order by totalCost DESC
+            limit 1
             """)
-    List<UserWithMaxTotalCost> findUsersWithTotalCost();
+    UserWithMaxTotalCost findUsersWithTotalCost();
 
     @Query("""
-            select
-                new MostlyUsedTagIdByUserId(
-                    cwt.tagId as tagId,
-                    count(cwt) as countTag
-                )
+            select               
+                cwt.tagId as tagId,
+                count(cwt) as countTag
             from
                 CertificateWithTag cwt,
                 (
@@ -41,5 +41,5 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
             order by countTag DESC
             limit 1
             """)
-    MostlyUsedTagIdByUserId findMostlyUsedTag(Integer userId);
+    MostlyUsedTagIdByUserId findMostlyUsedTag(int userId);
 }
