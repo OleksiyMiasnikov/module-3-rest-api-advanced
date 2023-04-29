@@ -28,13 +28,13 @@ public class UserOrderController {
     public UserOrderDTO create(
             @Valid
             @RequestBody CreateUserOrderRequest request) {
-        log.info("Controller. Create a new order");
+        log.info("Creating a new order.");
         return mapper.toDTO(service.create(request));
     }
 
     @GetMapping()
     public Page<UserOrderDTO> findAll(Pageable pageable) {
-        log.info("Controller. Find all orders");
+        log.info("Getting all orders.");
         Page<UserOrder> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
@@ -43,13 +43,13 @@ public class UserOrderController {
     public List<UserOrderDTO> findByUser(
             @Valid
             @PathVariable("user") String user) {
-        log.info("Controller. Find all orders by user: " + user);
+        log.info("Getting all orders by user: {}.", user);
         return service.findByUser(user).stream().map(mapper::toDTO).toList();
     }
 
     @GetMapping("/max")
     public UserWithMaxTotalCostDTO findUserWithMaxTotalCost() {
-        log.info("Controller. Find find user id with max total cost");
+        log.info("Determining the most widely used tag of a user with the highest cost of all orders.");
         return service.findUserWithMaxTotalCost();
     }
 

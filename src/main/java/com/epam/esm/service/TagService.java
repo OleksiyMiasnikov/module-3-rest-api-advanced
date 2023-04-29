@@ -28,11 +28,11 @@ public class TagService {
     /**
      * Creates a new tag.
      *
-     * @param createTagRequest - createTagRequest of new tag
-     * @return {@link Tag} created tag
+     * @param createTagRequest - createTagRequest of new tag.
+     * @return {@link Tag} created tag.
      */
     public Tag create(CreateTagRequest createTagRequest) {
-        log.info("Service. Create a new tag.");
+        log.info("Creating a new tag.");
         Tag tag = mapper.toTag(createTagRequest);
         return repo.save(tag);
     }
@@ -40,49 +40,53 @@ public class TagService {
     /**
      * Finds a {@link Tag} by its id.
      *
-     * @param id tag id
-     * @return {@link Tag} tag
-     * @throws TagNotFoundException if a tag with a given id doesn't exist
+     * @param id tag id.
+     * @return {@link Tag} tag.
+     * @throws TagNotFoundException if a tag with a given id doesn't exist.
      */
     public Tag findById(int id) {
-        log.info("Service. Find tag by id: " + id);
+        log.info("Getting tag by id: {}.", id);
         Optional<Tag> result = repo.findById(id);
         return result.orElseThrow(() -> new TagNotFoundException(
                 "Requested tag is not found (id=" + id + ")"));
     }
 
     /**
-     * Finds all {@link Tag} by name.
-     * Returns all records if name is empty
+     * Finds all {@link Tag} by name with pageable.
+     * Returns all records if name is empty.
      *
-     * @param name tag name
-     * @return List {@link Tag} List of tags
+     * @param name tag name.
+     * @return List {@link Tag} List of tags.
      */
     public Page<Tag> findByNameWithPageable(String name, Pageable pageable) {
-        log.info("Service. Find tag by name: " + name);
-        return (name.isEmpty()) ? repo.findAll(pageable) : repo.findByName(name, pageable);
+        log.info("Locking for tag by name: {} with pageable.", name);
+        return (name == null || name.isEmpty())
+                ? repo.findAll(pageable)
+                : repo.findByName(name, pageable);
     }
 
     /**
      * Finds all {@link Tag} by name.
-     * Returns all records if name is empty
+     * Returns all records if name is empty.
      *
-     * @param name tag name
-     * @return List {@link Tag} List of tags
+     * @param name tag name.
+     * @return List {@link Tag} List of tags.
      */
     public List<Tag> findByName(String name) {
-        log.info("Service. Find tag by name: " + name);
-        return (name.isEmpty()) ? repo.findAll() : repo.findByName(name);
+        log.info("Locking for tag by name: {}.", name);
+        return (name == null || name.isEmpty())
+                ? repo.findAll()
+                : repo.findByName(name);
     }
 
     /**
      * Removes a {@link Tag} by its id.
      *
      * @param id tag id
-     * @return boolean result of removing tag with appropriate id
+     * @return boolean result of removing tag with appropriate id.
      */
     public boolean delete(int id) {
-        log.info("Service. Delete tag by id: " + id);
+        log.info("Deleting tag by id: {}.", id);
         Optional<Tag> deletedTag = repo.findById(id);
         if (deletedTag.isEmpty()) return false;
         repo.delete(deletedTag.get());

@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -26,12 +28,13 @@ public class CertificateWithTagController{
     private final CertificateWithTagService service;
     private final CertificateWithTagMapper mapper;
 
-
     @PostMapping()
     public CertificateWithTagDTO create(
             @Valid
             @RequestBody CertificateWithTagRequest request) {
-        log.info("Controller. Create a new certificate with tag.");
+        log.info("Creating a new certificate '{}' with tag '{}'.",
+                request.getName(),
+                request.getTag());
         CertificateWithTagDTO createdDTO = mapper.toDTO(service.create(request));
         createdDTO.add(
                 linkTo(methodOn(CertificateWithTagController.class)
@@ -42,30 +45,30 @@ public class CertificateWithTagController{
 
     @GetMapping()
     public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
-        log.info("Controller. Find all certificates with tags");
+        log.info("Getting all certificates with tags");
 
         Page<CertificateWithTag> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
 
-    @GetMapping("/tag/{name}")
+    @GetMapping("/tag")
     public Page<CertificateWithTagDTO> findByTagNames(Pageable pageable,
-                                                     @PathVariable("name") List<String> list) {
-        log.info("Controller. Find all certificates with tag");
-        Page<CertificateWithTag> page = service.findByTagNames(pageable, list);
+                                                      @Param("name") String ... name) {
+        log.info("Getting all certificates by tag name.");
+        Page<CertificateWithTag> page = service.findByTagNames(pageable, Arrays.stream(name).toList());
         return page.map(mapper::toDTO);
     }
 
     @GetMapping("/{id}")
     public CertificateWithTagDTO findById(@PathVariable("id") int id) {
-        log.info("Controller. Find certificate with tag by id: " + id);
+        log.info("Locking for certificate with tag by id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }
 
-    @GetMapping("/search/{pattern}")
+    @GetMapping("/search")
     public List<CertificateWithTagDTO> findByPartOfNameOrDescription(
-            @PathVariable("pattern") String pattern) {
-        log.info("Controller. Find certificate by part of name or description");
+            @Param("pattern") String pattern) {
+        log.info("Locking for certificates by part of name or description");
         return service.findByPartOfNameOrDescription(pattern).stream().map(mapper::toDTO).toList();
     }
 }

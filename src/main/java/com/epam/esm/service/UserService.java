@@ -28,7 +28,7 @@ public class UserService {
      * @throws UserNotFoundException if a user with a given id doesn't exist
      */
     public User findById(int id) {
-        log.info("Service. Find user by id: " + id);
+        log.info("Locking for user by id: {}.", id);
         Optional<User> result = repo.findById(id);
         return result.orElseThrow(() -> new UserNotFoundException(
                 "Requested user is not found (id=" + id + ")"));
@@ -40,7 +40,7 @@ public class UserService {
      * @return List of {@link User} List of all users from database
      */
     public Page<User> findAll(Pageable pageable) {
-        log.info("Service. Find all users");
+        log.info("Getting all users.");
         return repo.findAll(pageable);
     }
 
@@ -51,7 +51,7 @@ public class UserService {
      * @return {@link User} created tag
      */
     public User create(String name) {
-        log.info("Service. Create a new user.");
+        log.info("Creating a new user with name: {}.", name);
         User user = User.builder().name(name).build();
         return repo.save(user);
     }
