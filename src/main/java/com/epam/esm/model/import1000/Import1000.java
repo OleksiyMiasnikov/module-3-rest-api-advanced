@@ -1,7 +1,7 @@
 package com.epam.esm.model.import1000;
 
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
-import com.epam.esm.model.DTO.order.CreateOrderRequest;
+import com.epam.esm.model.DTO.user_order.CreateUserOrderRequest;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
@@ -22,7 +22,7 @@ public class Import1000 {
     private final UserService userService;
     private final TagService tagService;
     private final CertificateWithTagService certificateWithTagService;
-    private final OrderService orderService;
+    private final UserOrderService userOrderService;
 
     public void parseFileWithTags() throws FileNotFoundException {
         File file = new File("db//spring-core.txt");
@@ -71,7 +71,7 @@ public class Import1000 {
                     .duration(random.nextInt(180))
                     .build();
             CertificateWithTag certificateWithTag = certificateWithTagService.create(request);
-            orderService.create(CreateOrderRequest.builder()
+            userOrderService.create(CreateUserOrderRequest.builder()
                             .certificateWithTagId(certificateWithTag.getId())
                             .userId(users.get(random.nextInt(users.size())).getId())
                             .build());

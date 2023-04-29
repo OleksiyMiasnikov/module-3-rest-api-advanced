@@ -1,9 +1,9 @@
 package com.epam.esm.service.mapper;
 
-import com.epam.esm.exception.ModuleException;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
-import com.epam.esm.model.DTO.order.CreateOrderRequest;
-import com.epam.esm.model.DTO.order.OrderDTO;
+import com.epam.esm.model.DTO.user_order.CreateUserOrderRequest;
+import com.epam.esm.model.DTO.user_order.UserOrderDTO;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.UserOrder;
@@ -13,7 +13,6 @@ import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -30,22 +29,14 @@ public class OrderMapper {
     private final CertificateWithTagMapper mapper;
     private static final String PATTERN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
-    public UserOrder toOrder(CreateOrderRequest request) {
+    public UserOrder toOrder(CreateUserOrderRequest request) {
         CertificateWithTag certificateWithTag
                 = certificateWithTagRepository.findById(request.getCertificateWithTagId())
-                          .orElseThrow(() -> new ModuleException("Requested certificate with tag is not found (id=" +
-                                  request.getCertificateWithTagId() +
-                                  ")",
-                                "40471",
-                                HttpStatus.NOT_FOUND));
+                          .orElseThrow(() -> new CertificateNotFoundException("Error"));
 
         Certificate certificate
                 = certificateRepository.findById(certificateWithTag.getCertificateId())
-                .orElseThrow(() -> new ModuleException("Requested certificate is not found (id=" +
-                        certificateWithTag.getCertificateId() +
-                        ")",
-                        "40472",
-                        HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CertificateNotFoundException("Error"));
 
         return UserOrder.builder()
                 .userId(request.getUserId())
@@ -55,12 +46,12 @@ public class OrderMapper {
                 .build();
     }
 
-    public OrderDTO toDTO(UserOrder userOrder) {
+    public UserOrderDTO toDTO(UserOrder userOrder) {
         Optional<User> userOptional = userRepository.findById(userOrder.getUserId());
         Optional<CertificateWithTag> certificateWithTagOptional = certificateWithTagRepository.findById(userOrder.getCertificateWithTagId());
 
         if (userOptional.isEmpty() || certificateWithTagOptional.isEmpty()) {
-            throw new ModuleException("ups...", "50001", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CertificateNotFoundException("Error");
         }
 
         User user = userOptional.get();
@@ -68,7 +59,7 @@ public class OrderMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
                 .withZone(ZoneId.systemDefault());
 
-        return OrderDTO.builder()
+        return UserOrderDTO.builder()
                 .id(userOrder.getId())
                 .userName(user.getName())
                 .CertificateWithTagId(userOrder.getCertificateWithTagId())

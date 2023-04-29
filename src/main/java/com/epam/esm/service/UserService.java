@@ -1,18 +1,14 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.ModuleException;
-import com.epam.esm.model.DTO.tag.CreateTagRequest;
-import com.epam.esm.model.entity.Tag;
+import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,14 +25,13 @@ public class UserService {
      *
      * @param id user id
      * @return {@link User} user
-     * @throws ModuleException if a user with a given id doesn't exist
+     * @throws UserNotFoundException if a user with a given id doesn't exist
      */
     public User findById(int id) {
         log.info("Service. Find user by id: " + id);
         Optional<User> result = repo.findById(id);
-        return result.orElseThrow(() -> new ModuleException("Requested user is not found (id=" + id + ")",
-                "40401",
-                HttpStatus.NOT_FOUND));
+        return result.orElseThrow(() -> new UserNotFoundException(
+                "Requested user is not found (id=" + id + ")"));
     }
 
     /**
@@ -56,7 +51,7 @@ public class UserService {
      * @return {@link User} created tag
      */
     public User create(String name) {
-        //log.info("Service. Create a new user.");
+        log.info("Service. Create a new user.");
         User user = User.builder().name(name).build();
         return repo.save(user);
     }

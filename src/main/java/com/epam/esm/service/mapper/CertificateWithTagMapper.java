@@ -1,7 +1,7 @@
 package com.epam.esm.service.mapper;
 
 import com.epam.esm.controller.CertificateWithTagController;
-import com.epam.esm.exception.ModuleException;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -9,7 +9,6 @@ import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
@@ -34,7 +33,7 @@ public class CertificateWithTagMapper {
         Optional<Tag> tagOptional = tagRepository.findById(certificateWithTag.getTagId());
 
         if (certificateOptional.isEmpty() || tagOptional.isEmpty()) {
-            throw new ModuleException("Error","50001", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CertificateNotFoundException("Error");
         }
 
         Certificate certificate = certificateOptional.get();

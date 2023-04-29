@@ -1,4 +1,4 @@
-package com.epam.esm.model.DTO.order;
+package com.epam.esm.model.DTO.user_order;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CreateOrderRequest {
+public class CreateUserOrderRequest {
     @NotNull(message = "Field 'userId' can not be empty!")
     @Min(value = 1, message = "Field 'userId' should be more then 0!")
     private int userId;

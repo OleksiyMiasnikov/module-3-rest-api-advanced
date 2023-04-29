@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.ModuleException;
+import com.epam.esm.exception.CertificateWithTagNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,14 +118,14 @@ public class CertificateWithTagService{
      *
      * @param id certificate with tag id
      * @return {@link CertificateWithTag} CertificateWithTag
-     * @throws ModuleException if a certificate with tag with a given id doesn't exist
+     * @throws CertificateWithTagNotFoundException if a certificate with tag with a given id doesn't exist
      */
     public CertificateWithTag findById(int id) {
         log.info("Service. Find certificate with tag by id: " + id);
 
         return repo.findById(id)
-                .orElseThrow(() -> new ModuleException("Requested certificate is not found (id=" + id + ")",
-                        "40411",
-                        HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CertificateWithTagNotFoundException(
+                        "Requested certificate with tag is not found (id=" + id + ")"
+                        ));
     }
 }

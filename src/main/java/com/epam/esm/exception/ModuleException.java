@@ -1,16 +1,14 @@
 package com.epam.esm.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.http.HttpStatus;
+import lombok.Getter;
+import lombok.Setter;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 public class ModuleException extends RuntimeException{
     private String message;
     private String errorCode;
-    private HttpStatus htmlStatus;
+    public ModuleException(String message) {
+        this.message = message;
+    }
 }
-

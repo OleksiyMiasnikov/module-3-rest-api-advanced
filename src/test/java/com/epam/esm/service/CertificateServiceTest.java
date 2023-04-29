@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.ModuleException;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
@@ -100,7 +100,7 @@ class CertificateServiceTest {
         when(repo.findById(wrongId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> subject.findById(wrongId))
-                .isInstanceOf(ModuleException.class)
+                .isInstanceOf(CertificateNotFoundException.class)
                 .hasMessageContaining("Requested certificate is not found (id=" + wrongId + ")");
     }
 

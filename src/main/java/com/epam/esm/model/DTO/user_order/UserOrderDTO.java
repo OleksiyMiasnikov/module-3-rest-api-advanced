@@ -1,11 +1,11 @@
-package com.epam.esm.model.DTO.order;
+package com.epam.esm.model.DTO.user_order;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class OrderDTO {
+public class UserOrderDTO {
     private int id;
     private String userName;
     private int CertificateWithTagId;

@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.ModuleException;
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,14 +42,13 @@ public class TagService {
      *
      * @param id tag id
      * @return {@link Tag} tag
-     * @throws ModuleException if a tag with a given id doesn't exist
+     * @throws TagNotFoundException if a tag with a given id doesn't exist
      */
     public Tag findById(int id) {
         log.info("Service. Find tag by id: " + id);
         Optional<Tag> result = repo.findById(id);
-        return result.orElseThrow(() -> new ModuleException("Requested tag is not found (id=" + id + ")",
-                "40401",
-                HttpStatus.NOT_FOUND));
+        return result.orElseThrow(() -> new TagNotFoundException(
+                "Requested tag is not found (id=" + id + ")"));
     }
 
     /**

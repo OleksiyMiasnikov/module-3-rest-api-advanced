@@ -1,10 +1,10 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.model.DTO.UserWithMaxTotalCostDTO;
-import com.epam.esm.model.DTO.order.CreateOrderRequest;
-import com.epam.esm.model.DTO.order.OrderDTO;
+import com.epam.esm.model.DTO.user_order.CreateUserOrderRequest;
+import com.epam.esm.model.DTO.user_order.UserOrderDTO;
 import com.epam.esm.model.entity.UserOrder;
-import com.epam.esm.service.OrderService;
+import com.epam.esm.service.UserOrderService;
 import com.epam.esm.service.mapper.OrderMapper;
 import com.epam.esm.service.mapper.UserWithMaxTotalCostMapper;
 import jakarta.validation.Valid;
@@ -20,30 +20,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-public class OrderController {
+public class UserOrderController {
 
-    private final OrderService service;
+    private final UserOrderService service;
     private final OrderMapper mapper;
     private final UserWithMaxTotalCostMapper userWithMaxTotalCostMapper;
 
 
     @PostMapping()
-    public OrderDTO create(
+    public UserOrderDTO create(
             @Valid
-            @RequestBody CreateOrderRequest request) {
+            @RequestBody CreateUserOrderRequest request) {
         log.info("Controller. Create a new order");
         return mapper.toDTO(service.create(request));
     }
 
     @GetMapping()
-    public Page<OrderDTO> findAll(Pageable pageable) {
+    public Page<UserOrderDTO> findAll(Pageable pageable) {
         log.info("Controller. Find all orders");
         Page<UserOrder> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
 
     @GetMapping("/{user}")
-    public List<OrderDTO> findByUser(
+    public List<UserOrderDTO> findByUser(
             @Valid
             @PathVariable("user") String user) {
         log.info("Controller. Find all orders by user: " + user);
