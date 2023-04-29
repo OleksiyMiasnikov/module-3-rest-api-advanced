@@ -36,16 +36,16 @@ public class CertificateController{
     }
 
     @GetMapping("/{id}")
-    public Certificate findById(@PathVariable("id") int id) {
+    public CertificateDTO findById(@PathVariable("id") int id) {
         log.info("Controller. Find certificate by id: " + id);
-        return service.findById(id);
+        return mapper.toDTO(service.findById(id));
     }
 
     @PatchMapping("/{id}")
-    public Certificate update(@PathVariable("id") int id,
+    public CertificateDTO update(@PathVariable("id") int id,
                               @RequestBody Certificate certificate) {
         log.info("Controller. Update certificate by id: " + id);
-        return service.update(id, certificate);
+        return mapper.toDTO(service.update(id, certificate));
     }
 
     @DeleteMapping("/{id}")

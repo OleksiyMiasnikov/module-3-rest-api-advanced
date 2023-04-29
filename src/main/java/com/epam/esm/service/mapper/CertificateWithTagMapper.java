@@ -29,8 +29,10 @@ public class CertificateWithTagMapper {
 
     public CertificateWithTagDTO toDTO(CertificateWithTag certificateWithTag) {
 
-        Optional<Certificate> certificateOptional = certificateRepository.findById(certificateWithTag.getCertificateId());
-        Optional<Tag> tagOptional = tagRepository.findById(certificateWithTag.getTagId());
+        Optional<Certificate> certificateOptional =
+                certificateRepository.findById(certificateWithTag.getCertificateId());
+        Optional<Tag> tagOptional =
+                tagRepository.findById(certificateWithTag.getTagId());
 
         if (certificateOptional.isEmpty() || tagOptional.isEmpty()) {
             throw new CertificateNotFoundException("Error");
@@ -41,7 +43,7 @@ public class CertificateWithTagMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
                 .withZone(ZoneId.systemDefault());
 
-        CertificateWithTagDTO certificateWithTagDTO = CertificateWithTagDTO.builder()
+        return CertificateWithTagDTO.builder()
                 .id(certificateWithTag.getId())
                 .tag(tag.getName())
                 .name(certificate.getName())
@@ -51,9 +53,5 @@ public class CertificateWithTagMapper {
                 .createDate(formatter.format(certificate.getCreateDate()))
                 .lastUpdateDate(formatter.format(certificate.getLastUpdateDate()))
                 .build();
-        certificateWithTagDTO.add(linkTo(methodOn(CertificateWithTagController.class)
-                .findById(certificateWithTag.getId()))
-                .withSelfRel());
-        return certificateWithTagDTO;
     }
 }
