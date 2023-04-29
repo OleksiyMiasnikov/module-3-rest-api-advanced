@@ -57,7 +57,7 @@ public class OrderService {
     }
 
     public List<UserOrder> findByUser(String name) {
-        log.info("Service. Find all orders by user: " + name);
+        log.info("Looking for all orders by user name: {}", name);
 
         User user = userRepository.findByName(name).stream().findAny()
                 .orElseThrow(() -> new ModuleException("Requested user is not found",
