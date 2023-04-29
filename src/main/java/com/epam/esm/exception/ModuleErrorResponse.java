@@ -10,5 +10,4 @@ import lombok.Setter;
 public class ModuleErrorResponse {
     private String errorMessage;
     private String errorCode;
-
 }

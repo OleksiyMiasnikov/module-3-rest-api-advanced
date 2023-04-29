@@ -1,40 +1,37 @@
 package com.epam.esm.controller.advice;
 
-import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.exception.ModuleErrorResponse;
+import com.epam.esm.exception.ModuleException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.Objects;
 
 @ControllerAdvice
 public class ModuleExceptionHandler {
 
     @ExceptionHandler
-    private ResponseEntity<ModuleErrorResponse> handleException(
-            CertificateNotFoundException exception){
+    private ResponseEntity<ModuleErrorResponse> handleException(ModuleException exception){
         return new ResponseEntity<>(new ModuleErrorResponse(
                 exception.getMessage(),
                 exception.getErrorCode()),
+                exception.getHttpStatusCode());
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ModuleErrorResponse> handleException(BindException exception){
+        return new ResponseEntity<>(new ModuleErrorResponse(
+                exception.getMessage(),
+                "40001"),
                 HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler
-    private ResponseEntity<ModuleErrorResponse> handleException(MethodArgumentNotValidException exception){
-        return new ResponseEntity<>(new ModuleErrorResponse(
-                Objects.requireNonNull(exception.getFieldError()).getDefaultMessage(),
-                "40001"),
-                exception.getStatusCode());
-    }
-
 
     @ExceptionHandler
-    private ResponseEntity<ModuleErrorResponse> handleException(MethodArgumentTypeMismatchException exception){
+    private ResponseEntity<ModuleErrorResponse> handleException(TypeMismatchException exception){
         return new ResponseEntity<>(new ModuleErrorResponse(
                 exception.getMessage(),
                 "40002"),
@@ -42,11 +39,10 @@ public class ModuleExceptionHandler {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ModuleErrorResponse> handleException(HttpMessageNotReadableException exception){
+    private ResponseEntity<ModuleErrorResponse> handleException(HttpMessageConversionException exception){
         return new ResponseEntity<>(new ModuleErrorResponse(
-                exception.getLocalizedMessage(),
+                exception.getMessage(),
                 "40003"),
                 HttpStatus.BAD_REQUEST);
     }
-
 }

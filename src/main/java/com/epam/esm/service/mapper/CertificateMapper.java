@@ -22,25 +22,10 @@ public class CertificateMapper {
     private final ModelMapper mapper = new ModelMapper();
 
     public Certificate toCertificate(CertificateWithTagRequest request) {
-
         return mapper.map(request, Certificate.class);
-//        return Certificate.builder()
-//                .name(request.getName())
-//                .description(request.getDescription())
-//                .price(request.getPrice())
-//                .duration(request.getDuration())
-//                .build();
     }
 
     public Certificate toCertificate(CreateCertificateRequest request) {
-//        return Certificate.builder()
-//                .name(request.getName())
-//                .description(request.getDescription())
-//                .price(request.getPrice())
-//                .duration(request.getDuration())
-//                .createDate(DateUtil.getDate())
-//                .lastUpdateDate(DateUtil.getDate())
-//                .build();
         TypeMap<CreateCertificateRequest, Certificate> propertyMapper =
                 mapper.createTypeMap(CreateCertificateRequest.class, Certificate.class);
         propertyMapper.addMappings(
