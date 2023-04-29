@@ -1,6 +1,5 @@
 package com.epam.esm.service.mapper;
 
-import com.epam.esm.controller.CertificateWithTagController;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.entity.Certificate;
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 @RequiredArgsConstructor
