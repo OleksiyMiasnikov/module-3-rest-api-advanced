@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,5 +55,10 @@ public class UserService {
         log.info("Creating a new user with name: {}.", name);
         User user = User.builder().name(name).build();
         return repo.save(user);
+    }
+
+    public List<User> findByName(String name) {
+        log.info("Locking for user by name: {}.", name);
+        return repo.findByName(name);
     }
 }

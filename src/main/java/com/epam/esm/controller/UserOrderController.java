@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,10 +40,10 @@ public class UserOrderController {
         return page.map(mapper::toDTO);
     }
 
-    @GetMapping("/{user}")
+    @GetMapping("/user")
     public List<UserOrderDTO> findByUser(
             @Valid
-            @PathVariable("user") String user) {
+            @Param("user") String user) {
         log.info("Getting all orders by user: {}.", user);
         return service.findByUser(user).stream().map(mapper::toDTO).toList();
     }

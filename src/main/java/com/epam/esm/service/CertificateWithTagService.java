@@ -90,9 +90,11 @@ public class CertificateWithTagService{
      */
     public Page<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
         log.info("Getting all certificates by tag.");
-        List<Integer> tagIds = tagList.stream()
-                .map(t -> tagRepo.findByName(t).get(0).getId())
-                .toList();
+        List<Integer> tagIds = new ArrayList<>();
+        for (String name : tagList) {
+            List<Tag> tags = tagRepo.findByName(name);
+            if (tags.size() > 0) tagIds.add(tags.get(0).getId());
+        }
         return repo.findByTagIds(tagIds, pageable);
     }
 
