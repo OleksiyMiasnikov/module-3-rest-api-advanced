@@ -33,7 +33,7 @@ public class CertificateService {
      * @return {@link Certificate} created certificate
      */
     public Certificate create(CreateCertificateRequest request) {
-        log.info("Service. Create a new certificate.");
+        log.info("Creating a new certificate.");
 
         Certificate certificate = mapper.toCertificate(request);
 
@@ -46,7 +46,7 @@ public class CertificateService {
      * @return List of {@link Certificate} List of all certificates from database
      */
     public Page<Certificate> findAll(Pageable pageable) {
-        log.info("Service. Find all certificates");
+        log.info("Getting all certificates.");
         return repo.findAll(pageable);
     }
 
@@ -58,7 +58,7 @@ public class CertificateService {
      * @throws CertificateNotFoundException if a certificate with a given id doesn't exist
      */
     public Certificate findById(int id) {
-        log.info("Service. Find certificate by id: " + id);
+        log.info("Locking for certificate by id: {}.", id);
 
         return repo.findById(id)
                 .orElseThrow(() ->
@@ -77,7 +77,7 @@ public class CertificateService {
      */
     @Transactional
     public Certificate update(int id, Certificate certificate) {
-        log.info("Service. Update certificate by id: " + id);
+        log.info("Updating certificate by id: {}.", id);
 
         Certificate oldCertificate = findById(id);
 
@@ -105,7 +105,7 @@ public class CertificateService {
      * @return boolean result of removing certificate with appropriate id
      */
     public boolean delete(int id) {
-        log.info("Service. Delete certificate by id: " + id);
+        log.info("Deleting certificate by id: {}.", id);
         Optional<Certificate> deletedCertificate = repo.findById(id);
         if (deletedCertificate.isPresent()) {
             repo.delete(deletedCertificate.get());
@@ -113,7 +113,5 @@ public class CertificateService {
         } else {
             return false;
         }
-
     }
-
 }

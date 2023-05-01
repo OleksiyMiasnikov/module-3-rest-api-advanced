@@ -27,13 +27,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDTO findById(@PathVariable("id") int id) {
-        log.info("Controller. Find user by id: " + id);
+        log.info("Locking for user by id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }
 
     @GetMapping()
     public Page<UserDTO> findAll(Pageable pageable) {
-        log.info("Controller. Find all certificates");
+        log.info("Getting all certificates");
         Page<User> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }

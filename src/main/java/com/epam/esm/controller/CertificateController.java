@@ -24,33 +24,33 @@ public class CertificateController{
     public CertificateDTO create(
             @Valid
             @RequestBody CreateCertificateRequest request) {
-        log.info("Controller. Create certificate with name: " + request.getName());
+        log.info("Creating certificate with name: {}.", request.getName());
         return mapper.toDTO(service.create(request));
     }
 
     @GetMapping()
     public Page<CertificateDTO> findAll(Pageable pageable) {
-        log.info("Controller. Find all certificates");
+        log.info("Getting all certificates.");
         Page<Certificate> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
 
     @GetMapping("/{id}")
     public CertificateDTO findById(@PathVariable("id") int id) {
-        log.info("Controller. Find certificate by id: " + id);
+        log.info("Locking for certificate with id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }
 
     @PatchMapping("/{id}")
     public CertificateDTO update(@PathVariable("id") int id,
                               @RequestBody Certificate certificate) {
-        log.info("Controller. Update certificate by id: " + id);
+        log.info("Updating certificate by id: {}.", id);
         return mapper.toDTO(service.update(id, certificate));
     }
 
     @DeleteMapping("/{id}")
     public boolean delete(@PathVariable("id") int id) {
-        log.info("Controller. Delete certificate by id: " + id);
+        log.info("Deleting certificate by id: {}.", id);
         return service.delete(id);
     }
 

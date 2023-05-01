@@ -41,7 +41,7 @@ public class CertificateWithTagService{
      */
     @Transactional
     public CertificateWithTag create(CertificateWithTagRequest request) {
-        //log.info("Service. Create a new certificate with tag.");
+        log.info("Creating a new certificate with tag.");
 
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId
@@ -76,7 +76,7 @@ public class CertificateWithTagService{
      * @return List of {@link CertificateWithTag} List of all certificates with tags from database
      */
     public Page<CertificateWithTag> findAll(Pageable pageable) {
-        log.info("Controller. Find all certificates with tags");
+        log.info("Getting all certificates with tags.");
         return repo.findAll(pageable);
     }
 
@@ -89,7 +89,7 @@ public class CertificateWithTagService{
      * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
      */
     public Page<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
-        log.info("Controller. Find all certificates with tag");
+        log.info("Getting all certificates by tag.");
         List<Integer> tagIds = tagList.stream()
                 .map(t -> tagRepo.findByName(t).get(0).getId())
                 .toList();
@@ -103,7 +103,7 @@ public class CertificateWithTagService{
      * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
      */
     public List<CertificateWithTag> findByPartOfNameOrDescription(String pattern) {
-        log.info("Service. Find certificate by part of name or description.");
+        log.info("Getting certificates by part of name or description.");
 
         Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
         set.addAll(certificateRepo.findByDescriptionContaining(pattern));
@@ -121,7 +121,7 @@ public class CertificateWithTagService{
      * @throws CertificateWithTagNotFoundException if a certificate with tag with a given id doesn't exist
      */
     public CertificateWithTag findById(int id) {
-        log.info("Service. Find certificate with tag by id: " + id);
+        log.info("Locking for certificate with tag by id: {}.", id);
 
         return repo.findById(id)
                 .orElseThrow(() -> new CertificateWithTagNotFoundException(
