@@ -5,11 +5,11 @@ import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.mapper.CertificateMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -22,7 +22,7 @@ public class CertificateController{
     private final CertificateMapper mapper;
     @PostMapping()
     public CertificateDTO create(
-            @Valid
+            @Validated
             @RequestBody CreateCertificateRequest request) {
         log.info("Creating certificate with name: {}.", request.getName());
         return mapper.toDTO(service.create(request));

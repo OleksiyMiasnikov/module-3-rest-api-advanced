@@ -5,12 +5,12 @@ import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
 import com.epam.esm.service.mapper.CertificateWithTagMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class CertificateWithTagController{
 
     @PostMapping()
     public CertificateWithTagDTO create(
-            @Valid
+            @Validated
             @RequestBody CertificateWithTagRequest request) {
         log.info("Creating a new certificate '{}' with tag '{}'.",
                 request.getName(),

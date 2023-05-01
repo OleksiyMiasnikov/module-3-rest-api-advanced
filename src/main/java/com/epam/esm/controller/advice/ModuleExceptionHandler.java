@@ -11,6 +11,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Objects;
+
 @Slf4j
 @ControllerAdvice
 public class ModuleExceptionHandler {
@@ -32,7 +34,7 @@ public class ModuleExceptionHandler {
                 exception.getMessage(),
                 40001);
         return new ResponseEntity<>(new ModuleErrorResponse(
-                exception.getMessage(),
+                Objects.requireNonNull(exception.getFieldError()).getDefaultMessage(),
                 "40001"),
                 HttpStatus.BAD_REQUEST);
     }

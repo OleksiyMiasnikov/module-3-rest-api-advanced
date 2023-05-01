@@ -31,7 +31,7 @@ public class CertificateWithTagMapper {
                 tagRepository.findById(certificateWithTag.getTagId());
 
         if (certificateOptional.isEmpty() || tagOptional.isEmpty()) {
-            throw new CertificateNotFoundException("Error");
+            throw new CertificateNotFoundException("Internal error");
         }
 
         Certificate certificate = certificateOptional.get();

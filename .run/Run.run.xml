@@ -1,7 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="com.epam.esm.Module3RestApiAdvancedApplication" />
     <module name="module-3" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.config.additional-location=classpath:application-local.yaml --spring.profiles.active=local" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

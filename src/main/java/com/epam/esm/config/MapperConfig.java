@@ -32,15 +32,15 @@ public class MapperConfig {
                 m -> m.map((certificateRequest) -> DateUtil.getDate(),
                         Certificate::setLastUpdateDate));
 
-        TypeMap<Certificate, CertificateDTO> propertyCertificateToDTO =
-                mapper.createTypeMap(Certificate.class, CertificateDTO.class);
-        Converter<Instant, String> formatDate = ctx -> ctx.getSource() != null
-                ? formatter.format(ctx.getSource())
-                : formatter.format(Instant.EPOCH);
-        propertyCertificateToDTO.addMappings(
-                m -> m.using(formatDate).map(Certificate::getCreateDate, CertificateDTO::setCreateDate));
-        propertyCertificateToDTO.addMappings(
-                m -> m.using(formatDate).map(Certificate::getLastUpdateDate, CertificateDTO::setLastUpdateDate));
+//        TypeMap<Certificate, CertificateDTO> propertyCertificateToDTO =
+//                mapper.createTypeMap(Certificate.class, CertificateDTO.class);
+//        Converter<Instant, String> formatDate = ctx -> ctx.getSource() != null
+//                ? formatter.format(ctx.getSource())
+//                : formatter.format(Instant.EPOCH);
+//        propertyCertificateToDTO.addMappings(
+//                m -> m.using(formatDate).map(Certificate::getCreateDate, CertificateDTO::setCreateDate));
+//        propertyCertificateToDTO.addMappings(
+//                m -> m.using(formatDate).map(Certificate::getLastUpdateDate, CertificateDTO::setLastUpdateDate));
 
         return mapper;
     }
