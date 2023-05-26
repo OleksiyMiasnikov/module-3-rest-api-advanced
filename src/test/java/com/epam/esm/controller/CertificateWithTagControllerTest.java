@@ -12,40 +12,51 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateWithTagControllerTest {
 
     private MockMvc mockMvc;
-
     @Mock
     CertificateWithTagService service;
     @Mock
     CertificateWithTagMapper mapper;
-
     @InjectMocks
     CertificateWithTagController subject;
+    private Pageable pageable;
+    private CertificateWithTag certificate1;
+    private CertificateWithTag certificate3;
+    private CertificateWithTagDTO certificateDto1;
+    private CertificateWithTagDTO certificateDto3;
+    Page<CertificateWithTag> page;
 
-    private final CertificateWithTag certificate1;
-    private final CertificateWithTag certificate3;
-
-    {
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(subject)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .setControllerAdvice(new ModuleExceptionHandler())
+                .build();
         certificate1 = CertificateWithTag.builder()
                 .tagId(1)
                 .certificateId(1)
@@ -54,14 +65,14 @@ class CertificateWithTagControllerTest {
                 .tagId(2)
                 .certificateId(3)
                 .build();
-    }
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(subject)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setControllerAdvice(new ModuleExceptionHandler())
-                .build();
+        PodamFactory factory = new PodamFactoryImpl();
+
+        certificateDto1 = factory.manufacturePojoWithFullData(CertificateWithTagDTO.class);
+        certificateDto3 = factory.manufacturePojoWithFullData(CertificateWithTagDTO.class);
+
+        pageable = Pageable.ofSize(3).withPage(0);
+        page = new PageImpl<>(List.of(certificate1, certificate3));
     }
     @Test
     void create() throws Exception {
@@ -101,43 +112,72 @@ class CertificateWithTagControllerTest {
 
     @Test
     void findByPartOfNameOrDescription() throws Exception {
-        List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate3));
-        String expected1 = "\"tag\":\"tag_1\"," +
-                "\"name\":\"certificate 1\"," +
-                "\"description\":\"description of certificate 1\"," +
-                "\"price\":15.5," +
-                "\"duration\":5,";
-        String expected2 = "\"tag\":\"tag_2\"," +
-                "\"name\":\"certificate 3\"," +
-                "\"description\":\"description of certificate 1\"," +
-                "\"price\":150.0," +
-                "\"duration\":14,";
-        CertificateWithTagDTO certificateDto1 = CertificateWithTagDTO.builder()
-                .tag("tag_1")
-                .name("certificate 1")
-                .description("description of certificate 1")
-                .price(15.5)
-                .duration(5)
-                .build();
-        CertificateWithTagDTO certificateDto3 = CertificateWithTagDTO.builder()
-                .tag("tag_2")
-                .name("certificate 3")
-                .description("description of certificate 1")
-                .price(150d)
-                .duration(14)
-                .build();
 
-        when(service.findByPartOfNameOrDescription("certificate 1")).thenReturn(list);
+        when(service.findByPartOfNameOrDescription("certificate 1")).thenReturn(List.of(certificate1, certificate3));
         when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
         when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
-        this.mockMvc.perform(get("/certificates_with_tags//search/{pattern}",
-                        "certificate 1"))
+        this.mockMvc.perform(get("/certificates_with_tags/search")
+                        .param("page", "0")
+                        .param("size", "3")
+                        .param("pattern","certificate 1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expected1)))
-                .andExpect(content().string(containsString(expected2)));
+                .andExpect(jsonPath("$.[0].id").value(certificateDto1.getId()))
+                .andExpect(jsonPath("$.[1].id").value(certificateDto3.getId()));
 
         verify(service).findByPartOfNameOrDescription("certificate 1");
+    }
+
+    @Test
+    void findAll() throws Exception {
+
+        when(service.findAll(pageable)).thenReturn(page);
+        when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
+        when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
+
+        this.mockMvc.perform(get("/certificates_with_tags")
+                        .param("page", "0")
+                        .param("size", "3"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id").value(certificateDto1.getId()))
+                .andExpect(jsonPath("$.content[1].id").value(certificateDto3.getId()));
+
+        verify(service).findAll(pageable);
+    }
+
+    @Test
+    void findByTagNames() throws Exception  {
+
+        when(service.findByTagNames(pageable, List.of("pattern"))).thenReturn(page);
+        when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
+        when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
+
+        this.mockMvc.perform(get("/certificates_with_tags/tag")
+                        .param("name", "pattern")
+                        .param("page", "0")
+                        .param("size", "3"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].id").value(certificateDto1.getId()))
+                .andExpect(jsonPath("$.content[1].id").value(certificateDto3.getId()));
+
+        verify(service).findByTagNames(pageable, List.of("pattern"));
+    }
+
+    @Test
+    void findById() throws Exception {
+        when(service.findById(1)).thenReturn(certificate1);
+        when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
+
+        this.mockMvc.perform(get("/certificates_with_tags/{id}", 1L))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(certificateDto1.getId()));
+
+        verify(service).findById(1);
     }
 }

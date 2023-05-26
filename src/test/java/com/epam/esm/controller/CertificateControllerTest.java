@@ -179,8 +179,16 @@ class CertificateControllerTest {
 
     @Test
     void findByIdTest() throws Exception {
+        CertificateDTO certificateDTO = CertificateDTO.builder()
+                .id(certificate1.getId())
+                .name(certificate1.getName())
+                .description(certificate1.getDescription())
+                .price(certificate1.getPrice())
+                .duration(certificate1.getDuration())
+                .build();
 
         when(service.findById(1)).thenReturn(certificate1);
+        when(mapper.toDTO(certificate1)).thenReturn(certificateDTO);
 
         this.mockMvc.perform(get("/certificates/{id}", 1))
                 .andDo(print())
@@ -208,8 +216,20 @@ class CertificateControllerTest {
                 .price(222.45)
                 .duration(5)
                 .build();
+        CertificateDTO expectedDTO = CertificateDTO.builder()
+                .id(1)
+                .name("new name of certificate")
+                .description("description of certificate 1")
+                .price(222.45)
+                .duration(5)
+                .build();
+        Certificate updatedCertificate = Certificate.builder()
+                .name("new name of certificate")
+                .price(222.45)
+                .build();
 
-        when(service.update(any(Integer.class),any(Certificate.class))).thenReturn(expectedCertificate);
+        when(service.update(1, updatedCertificate)).thenReturn(expectedCertificate);
+        when(mapper.toDTO(expectedCertificate)).thenReturn(expectedDTO);
 
         this.mockMvc.perform(patch("/certificates/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)

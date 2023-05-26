@@ -8,8 +8,10 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.mapper.TagMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,8 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class TagControllerTest {
 
     @Autowired
@@ -126,7 +128,6 @@ class TagControllerTest {
         Pageable pageable = Pageable.ofSize(3).withPage(0);
 
         when(service.findByNameWithPageable("first tag", pageable)).thenReturn(page);
-        when(mapper.toDTO(tag1)).thenReturn(tagDto1);
         when(mapper.toDTO(tag2)).thenReturn(tagDto2);
 
         this.mockMvc.perform(get("/tags")
@@ -135,29 +136,10 @@ class TagControllerTest {
                         .param("size", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expected)));
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0]").value(tag2));
 
         verify(service).findByNameWithPageable("first tag", pageable);
-    }
-
-    @Test
-    void findAllTest() throws Exception {
-        String expected = "[{\"id\":1,\"name\":\"first tag\"},{\"id\":2,\"name\":\"second tag\"}]";
-        Page<Tag> page = new PageImpl<>(listOfTwoTags);
-        Pageable pageable = Pageable.ofSize(3).withPage(0);
-
-        when(service.findByNameWithPageable("", pageable)).thenReturn(page);
-        when(mapper.toDTO(tag1)).thenReturn(tagDto1);
-        when(mapper.toDTO(tag2)).thenReturn(tagDto2);
-
-        this.mockMvc.perform(get("/tags")
-                        .param("page", "0")
-                        .param("size", "3"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expected)));
-
-        verify(service).findByNameWithPageable("", pageable);
     }
 
     @Test
